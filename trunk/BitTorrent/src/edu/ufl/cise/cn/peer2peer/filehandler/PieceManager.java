@@ -6,7 +6,7 @@ import edu.ufl.cise.cn.peer2peer.entities.Piece;
 /**
  * The Class PieceManager.
  *
- * @author sagar
+ * @author Mohit
  */
 public class PieceManager {
 	

@@ -6,7 +6,7 @@ package edu.ufl.cise.cn.peer2peer.entities;
  *
  * @author sagar
  */
-public class Peer2PeerMessage {
+public class Peer2PeerMessage implements PeerMessage{
 	
 	private int messageLength;
 	private int messgageType;
@@ -60,5 +60,15 @@ public class Peer2PeerMessage {
 	 */
 	public byte[] getMessage(){
 		return null;
+	}
+
+	public int getType() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	public int getMessageLength() {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 }

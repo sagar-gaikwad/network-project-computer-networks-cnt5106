@@ -1,11 +1,13 @@
 package edu.ufl.cise.cn.peer2peer.entities;
 
+import edu.ufl.cise.cn.peer2peer.utility.Constants;
+
 // TODO: Auto-generated Javadoc
 /**
  * The Class HandshakeMessage.
  * This function creates handshake message and provides function to get the Handshake message. 
  */
-public class HandshakeMessage {
+public class HandshakeMessage implements PeerMessage{
 	
 	/** The hand shake header. */
 	private String handShakeHeader;
@@ -32,7 +34,6 @@ public class HandshakeMessage {
 			handshakeMessage.close();
 			handshakeMessage = null;
 		}
-		
 		return handshakeMessage;
 	}
 	
@@ -59,5 +60,14 @@ public class HandshakeMessage {
 	 */
 	public byte[] getHandshakeMessage(){
 		return null;
+	}
+
+	public int getType() {
+		return Constants.HANDSHAKE_MESSAGE;
+	}
+
+	public int getMessageLength() {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 }

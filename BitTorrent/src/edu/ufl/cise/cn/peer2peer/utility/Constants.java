@@ -14,6 +14,10 @@ public class Constants {
 	public static final int NOT_INTERESTED_MESSAGE = 6;
 	public static final int HAVE_MESSAGE = 7;
 
+	//changes by rhishikesh 
+	public static final int CHOKE_MESSAGE_CON = 0;
+	public static final int SIZE_OF_MESSAGE = 1;
+	
 	/** The Constant LOG_FILE_NAME. */
 	public static final String LOG_FILE_NAME = "logger.filename";
 	

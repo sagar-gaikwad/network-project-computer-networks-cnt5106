@@ -46,14 +46,14 @@ public class MessageManager {
 		return null;
 	}
 	
-	//getChokeMessage
 	
-	// getUnchokeMessage
+	
 	
 	// getInterstedMessage
 	
 	// getNotInterstedMessage
 	
+	//getChokeMessage
 	public byte[] getChokeMessage(){
 
 		
@@ -64,6 +64,17 @@ public class MessageManager {
 		return rawChokeMessage;
 		
 	}
+	
+	// getUnchokeMessage
+	public byte[] getUnchokeMessage(){
+		ByteBuffer byteBuffer = ByteBuffer.allocate(5);
+		byteBuffer.putInt(Constants.SIZE_OF_EMPTY_MESSAGE);
+		byteBuffer.put(Constants.UNCHOKE_MESSAGE_CON);
+		byte[] rawUnChokeMessage = byteBuffer.array();
+		return rawUnChokeMessage;
+		
+	}
+	
 	
 	public byte[] getHaveMessage(byte[] payLoad){
 		return null;

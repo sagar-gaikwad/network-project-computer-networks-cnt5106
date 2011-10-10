@@ -31,7 +31,7 @@ public class MessageManager {
 	} 
 	
 	private boolean init(){
-		return false;
+		return true;
 	}
 	
 	public void close(){
@@ -55,15 +55,14 @@ public class MessageManager {
 	// getNotInterstedMessage
 	
 	public byte[] getChokeMessage(){
-		int temp = 0;
-		int size = Constants.SIZE_OF_MESSAGE;
-		temp = Constants.CHOKE_MESSAGE_CON;
+
 		
 		ByteBuffer byteBuffer = ByteBuffer.allocate(5);
-		byteBuffer.putInt(size);
+		byteBuffer.putInt(Constants.SIZE_OF_EMPTY_MESSAGE);
+		byteBuffer.put(Constants.CHOKE_MESSAGE_CON);
 		byte[] rawChokeMessage = byteBuffer.array();
-		rawChokeMessage[4] = (byte)temp;
 		return rawChokeMessage;
+		
 	}
 	
 	public byte[] getHaveMessage(byte[] payLoad){
@@ -88,6 +87,20 @@ public class MessageManager {
 	}
 	
 	public PeerMessage parseMessage(byte[] rawData){
+		if( rawData== null || rawData.length < 5){
+			return null;
+		}
+		
+		byte messageType = rawData[4];
+		
+		if(messageType == Constants.CHOKE_MESSAGE_CON){
+			System.out.println("This is choke message");
+			Peer2PeerMessage message = Peer2PeerMessage.getInstance();
+			message.setMessgageType(Constants.CHOKE_MESSAGE_CON);
+			message.setMessageLength(0);
+			message.setData(null);
+			return message;			
+		}
 		return null;
 	}
 }

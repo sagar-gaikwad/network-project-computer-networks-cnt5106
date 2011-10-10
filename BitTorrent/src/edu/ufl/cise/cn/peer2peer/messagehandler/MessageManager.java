@@ -49,10 +49,8 @@ public class MessageManager {
 	
 	
 	
-	// getInterstedMessage
 	
-	// getNotInterstedMessage
-	
+		
 	//getChokeMessage
 	public byte[] getChokeMessage(){
 
@@ -74,6 +72,26 @@ public class MessageManager {
 		return rawUnChokeMessage;
 		
 	}
+	
+	// getInterstedMessage
+	public byte[] getInterestedMessage(){
+		ByteBuffer byteBuffer = ByteBuffer.allocate(5);
+		byteBuffer.putInt(Constants.SIZE_OF_EMPTY_MESSAGE);
+		byteBuffer.put(Constants.INTERESTED_MESSAGE_CON);
+		byte[] rawInterestedMessage = byteBuffer.array();
+		return rawInterestedMessage;
+	}
+	
+	// getNotInterstedMessage
+	public byte[] getNotInterestedMessage(){
+		ByteBuffer byteBuffer = ByteBuffer.allocate(5);
+		byteBuffer.putInt(Constants.SIZE_OF_EMPTY_MESSAGE);
+		byteBuffer.put(Constants.NOT_INTERESTED_MESSAGE_CON);
+		byte[] rawNotInterestedMessage = byteBuffer.array();
+		return rawNotInterestedMessage;
+
+	}
+	
 	
 	
 	public byte[] getHaveMessage(byte[] payLoad){

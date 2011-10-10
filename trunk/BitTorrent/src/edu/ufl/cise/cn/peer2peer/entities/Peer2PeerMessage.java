@@ -8,6 +8,7 @@ package edu.ufl.cise.cn.peer2peer.entities;
  */
 public class Peer2PeerMessage implements PeerMessage{
 	
+
 	private int messageLength;
 	private int messgageType;
 	private int pieceIndex;
@@ -43,7 +44,7 @@ public class Peer2PeerMessage implements PeerMessage{
 	 * @return true, if successful
 	 */
 	private boolean init(){
-		return false;
+		return true;
 	}
 	
 	/**
@@ -64,11 +65,40 @@ public class Peer2PeerMessage implements PeerMessage{
 
 	public int getType() {
 		// TODO Auto-generated method stub
-		return 0;
+		return this.messgageType;
 	}
 
 	public int getMessageLength() {
 		// TODO Auto-generated method stub
-		return 0;
+		return this.messageLength;
 	}
+	
+	public int getMessgageType() {
+		return messgageType;
+	}
+
+	public void setMessgageType(int messgageType) {
+		this.messgageType = messgageType;
+	}
+
+	public int getPieceIndex() {
+		return pieceIndex;
+	}
+
+	public void setPieceIndex(int pieceIndex) {
+		this.pieceIndex = pieceIndex;
+	}
+
+	public Piece getData() {
+		return data;
+	}
+
+	public void setData(Piece data) {
+		this.data = data;
+	}
+
+	public void setMessageLength(int messageLength) {
+		this.messageLength = messageLength;
+	}
+
 }

@@ -16,6 +16,7 @@ public class Constants {
 
 	//changes by rhishikesh 
 	public static final byte CHOKE_MESSAGE_CON = 0;
+	public static final byte UNCHOKE_MESSAGE_CON = 1;
 	public static final int SIZE_OF_EMPTY_MESSAGE = 1;
 	
 	/** The Constant LOG_FILE_NAME. */

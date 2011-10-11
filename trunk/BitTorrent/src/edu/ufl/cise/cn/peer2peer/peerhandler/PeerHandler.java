@@ -13,23 +13,51 @@ import edu.ufl.cise.cn.peer2peer.entities.PeerMessage;
 import edu.ufl.cise.cn.peer2peer.messagehandler.MessageManager;
 import edu.ufl.cise.cn.peer2peer.utility.Constants;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class PeerHandler.
+ * Communication with each neighboring peer is handled through this class.
+ *
+ * @author sagarg
+ */
 public class PeerHandler implements Runnable{
 	
+	/** The peer id. */
 	private String peerID;
-	private Socket neighbourPeerSocket;
-	private InputStream neighbourPeerInputStream;
-	private OutputStream neighbourPeerOutputStream;
+	
+	/** The neighbor peer socket. */
+	private Socket neighborPeerSocket;
+	
+	/** The neighbor peer input stream. */
+	private InputStream neighborPeerInputStream;
+	
+	/** The neighbor peer output stream. */
+	private OutputStream neighborPeerOutputStream;
+	
+	/** The message manager. */
 	private MessageManager messageManager;
+	
+	/** The controller. */
 	private Controller controller;
 	
+	/**
+	 * Instantiates a new peer handler.
+	 */
 	private PeerHandler(){
 		
 	}
 	
+	/**
+	 * Gets the single instance of PeerHandler.
+	 *
+	 * @param socket the socket
+	 * @param controller the controller
+	 * @return single instance of PeerHandler
+	 */
 	synchronized public static PeerHandler getInstance(Socket socket, Controller controller){
 		PeerHandler peerHandler = new PeerHandler();
 		
-		peerHandler.neighbourPeerSocket = socket;
+		peerHandler.neighborPeerSocket = socket;
 		peerHandler.controller = controller;
 		
 		boolean isInitialized = peerHandler.init();
@@ -41,14 +69,19 @@ public class PeerHandler implements Runnable{
 		return peerHandler;
 	}
 	
+	/**
+	 * Inits peerHandler.
+	 *
+	 * @return true, if successful
+	 */
 	synchronized private boolean init(){
-		if(neighbourPeerSocket == null){
+		if(neighborPeerSocket == null){
 			return false;
 		}
 		
 		try {
-			neighbourPeerOutputStream = neighbourPeerSocket.getOutputStream();
-			neighbourPeerInputStream = neighbourPeerSocket.getInputStream();			
+			neighborPeerOutputStream = neighborPeerSocket.getOutputStream();
+			neighborPeerInputStream = neighborPeerSocket.getInputStream();			
 		} catch (IOException e) {
 			e.printStackTrace();
 			return false;
@@ -69,10 +102,13 @@ public class PeerHandler implements Runnable{
 		return true;
 	}
 	
+	/**
+	 * Close all open streams.
+	 */
 	synchronized public void close(){
 		try {
-			if(neighbourPeerInputStream != null){
-				neighbourPeerInputStream.close();
+			if(neighborPeerInputStream != null){
+				neighborPeerInputStream.close();
 			}			
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -80,8 +116,8 @@ public class PeerHandler implements Runnable{
 		}
 		
 		try {
-			if(neighbourPeerOutputStream != null){
-				neighbourPeerOutputStream.close();
+			if(neighborPeerOutputStream != null){
+				neighborPeerOutputStream.close();
 			}			
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -89,6 +125,9 @@ public class PeerHandler implements Runnable{
 		}		
 	}
 	
+	/* (non-Javadoc)
+	 * @see java.lang.Runnable#run()
+	 */
 	public void run(){
 		byte[] rawData = new byte[Constants.RAW_DATA_SIZE];
 		ByteBuffer buffer = ByteBuffer.allocate(Constants.MAX_MESSAGE_SIZE);
@@ -97,12 +136,12 @@ public class PeerHandler implements Runnable{
 			while(controller.isOperationCompelete() == false){
 				int numbeOfBytesRead = -1;
 				System.out.println("Reading data from peer");
-				numbeOfBytesRead = neighbourPeerInputStream.read(rawData,0,Constants.RAW_DATA_SIZE);
-//				neighbourPeerInputStream.reset();
+				numbeOfBytesRead = neighborPeerInputStream.read(rawData,0,Constants.RAW_DATA_SIZE);
+//				neighborPeerInputStream.reset();
 				while(numbeOfBytesRead > 0){
 					System.out.println("rawData: "+new String(rawData,0,numbeOfBytesRead));
 					buffer.put(rawData);
-					numbeOfBytesRead = neighbourPeerInputStream.read(rawData,0,Constants.RAW_DATA_SIZE);
+					numbeOfBytesRead = neighborPeerInputStream.read(rawData,0,Constants.RAW_DATA_SIZE);
 				}
 				
 				System.out.println("Data received: "+buffer.toString());
@@ -151,46 +190,101 @@ public class PeerHandler implements Runnable{
 		}
 	}
 	
+	/**
+	 * Handle unchock message.
+	 *
+	 * @param peer2PeerMessage the peer2 peer message
+	 */
 	private void handleUnchockMessage(Peer2PeerMessage peer2PeerMessage) {
-		// TODO Auto-generated method stub
 		
 	}
 
+	/**
+	 * Handle piece message.
+	 *
+	 * @param peer2PeerMessage the peer2 peer message
+	 */
 	private void handlePieceMessage(Peer2PeerMessage peer2PeerMessage) {
-		// TODO Auto-generated method stub
 		
 	}
 
+	/**
+	 * Handle choke message.
+	 *
+	 * @param peer2PeerMessage the peer2 peer message
+	 */
 	private void handleChokeMessage(Peer2PeerMessage peer2PeerMessage) {
-		// TODO Auto-generated method stub
 		
 	}
 
+	/**
+	 * Handle bit field message.
+	 *
+	 * @param peer2PeerMessage the peer2 peer message
+	 */
 	private void handleBitFieldMessage(Peer2PeerMessage peer2PeerMessage) {
-		// TODO Auto-generated method stub
 		
 	}
 
+	/**
+	 * Handle handshake message.
+	 *
+	 * @param handshakeMessage the handshake message
+	 */
 	synchronized private void handleHandshakeMessage(HandshakeMessage handshakeMessage){
-		
+		// that means we are received request for creating peer connection. (We have not requested explicitly to this peer)
+		if(peerID == null){
+			peerID = handshakeMessage.getPeerID();
+			sendBitFieldMessage(controller.getBitFieldMessage());
+			sendHandshakeMessage(peerID);
+		}else{
+			// We have explicitly connected to this peer and sent handshake message earlier. We will just sent bitfield message in response
+			sendBitFieldMessage(controller.getBitFieldMessage());
+		}
 	}
 	
+	/**
+	 * Handle request message.
+	 *
+	 * @param message the message
+	 */
 	synchronized private void handleRequestMessage(Peer2PeerMessage message){
 		
 	}
 	
+	/**
+	 * Handle have message.
+	 *
+	 * @param message the message
+	 */
 	synchronized private void handleHaveMessage(Peer2PeerMessage message){
 		
 	}
 	
+	/**
+	 * Handle interested message.
+	 *
+	 * @param message the message
+	 */
 	synchronized private void handleInterestedMessage(Peer2PeerMessage message){
 		
 	}
 	
+	/**
+	 * Handle not interested message.
+	 *
+	 * @param message the message
+	 */
 	synchronized private void handleNotInterestedMessage(Peer2PeerMessage message){
 		
 	}
 	
+	/**
+	 * Send handshake message.
+	 *
+	 * @param peerID the peer id
+	 * @return true, if successful
+	 */
 	public synchronized boolean sendHandshakeMessage(String peerID){
 		try {
 			
@@ -200,12 +294,10 @@ public class PeerHandler implements Runnable{
 				
 				System.out.println("Sending handshake message to "+peerID);
 				
-				neighbourPeerOutputStream.write(data,0,data.length);
-				neighbourPeerOutputStream.flush();
-				
-				neighbourPeerOutputStream.write(data,0,data.length);
-				neighbourPeerOutputStream.flush();
-				neighbourPeerOutputStream.close();
+				neighborPeerOutputStream = neighborPeerSocket.getOutputStream();
+				neighborPeerOutputStream.write(data,0,data.length);
+				neighborPeerOutputStream.flush();
+				neighborPeerOutputStream.close();
 				System.out.println("sent data to peer: "+peerID);
 			}
 			
@@ -215,6 +307,62 @@ public class PeerHandler implements Runnable{
 			e.printStackTrace();
 		}
 		
+		return false;
+	}
+	
+	/**
+	 * Gets the neighbor peer id.
+	 *
+	 * @return the neighbor peer id
+	 */
+	public void getNeighborPeerID(){
+		try {
+			ByteBuffer buffer = ByteBuffer.allocate(32);
+			
+			byte[] rawData = new byte[Constants.RAW_DATA_SIZE];
+			
+			int numbeOfBytesRead = neighborPeerInputStream.read(rawData,0,Constants.RAW_DATA_SIZE);
+			
+			while(numbeOfBytesRead > 0){
+				System.out.println("rawData: "+new String(rawData,0,numbeOfBytesRead));
+				buffer.put(rawData);
+				numbeOfBytesRead = neighborPeerInputStream.read(rawData,0,Constants.RAW_DATA_SIZE);
+			}
+			
+			PeerMessage message = messageManager.parseMessage(buffer.array());
+		
+			if(message instanceof HandshakeMessage){
+				HandshakeMessage handshakeMessage = (HandshakeMessage) message; 
+				peerID = handshakeMessage.getType()+"";			
+			}
+			
+			byte[] bitFieldMessage = controller.getBitFieldMessage();
+			
+			sendBitFieldMessage(bitFieldMessage);
+			
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * Send bit field message.
+	 *
+	 * @param bitFieldMessage the bit field message
+	 * @return true, if successful
+	 */
+	private boolean sendBitFieldMessage(byte[] bitFieldMessage) {
+		try {
+			neighborPeerOutputStream = neighborPeerSocket.getOutputStream();
+			neighborPeerOutputStream.write(bitFieldMessage);
+			neighborPeerOutputStream.flush();
+			neighborPeerOutputStream.close();
+			return true;
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		return false;
 	}
 }

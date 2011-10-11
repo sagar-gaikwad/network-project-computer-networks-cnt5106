@@ -27,7 +27,7 @@ public class PropsReader {
 			while(line != null){
 				String tokens[] = line.trim().split(" ");
 				store.put(tokens[0].trim(), tokens[1].trim());
-				 line = configFileReader.readLine();
+				line = configFileReader.readLine();
 			}
 			
 		} catch (IOException e) {

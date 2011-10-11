@@ -23,6 +23,7 @@ public class Constants {
 	public static final byte BITFIELD_MESSAGE_CON = 5;
 	public static final byte REQUEST_MESSAGE_CON = 6;
 	public static final byte PIECE_MESSAGE_CON = 7;
+	public static final String HANDSHAKE_HEADER_STRING = "CEN5501C2008SPRING";
 	
 	public static final int SIZE_OF_EMPTY_MESSAGE = 1;
 	

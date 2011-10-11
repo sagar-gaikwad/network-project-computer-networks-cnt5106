@@ -1,72 +1,193 @@
 package edu.ufl.cise.cn.peer2peer.utility;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.logging.FileHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/*
- * This class extends Logger class to log custom messages
- * */
+// TODO: Auto-generated Javadoc
+/**
+ * The Class MessageLogger.
+ *
+ * @author sagarg
+ */
 public class MessageLogger extends Logger{
-	private String logFileName;
-	FileHandler fileHandler;
 	
-	/*
-	 * Parameter
-	 * logFileName: This parameter contains name of the log file.
-	 * name: This is name of the Logger class.
-	 * */
-	public MessageLogger(String logFileName, String name) {
+	/** The log file name. */
+	private String logFileName;
+	
+	/** The file handler. */
+	private FileHandler fileHandler;
+	
+	/** The peer id. */
+	private String peerID;
+	
+	/** The formatter. */
+	private SimpleDateFormat formatter = null;
+		
+	/**
+	 * Instantiates a new message logger.
+	 *
+	 * @param peerID the peer id
+	 * @param logFileName This parameter contains name of the log file.
+	 * @param name This is name of the Logger class.
+	 */
+	public MessageLogger(String peerID, String logFileName, String name) {
 		super(name, null);
-		this.logFileName = logFileName+".log";
+		this.logFileName = logFileName;
+		this.setLevel(Level.FINEST);
+		this.peerID = peerID;
 	}
 
-	/*
-	 * Add File Handler to logger class so that all log messages will be written in the file 
-	 * */
+	
+	/**
+	 * Initialize. Add File Handler to logger class so that all log messages will be written in the file
+	 *
+	 * @throws SecurityException the security exception
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
 	public void initialize() throws SecurityException, IOException{
 		fileHandler = new FileHandler(logFileName);
 		fileHandler.setFormatter(new LogMessageFormatter());
+		formatter = new SimpleDateFormat("E, dd MMM yyyy hh:mm:ss a");
 		this.addHandler(fileHandler);
 	}
 
-	/*
-	 * Log messages into file. This method is synchronized as multiple threads access this method. 
-	 * */
+	
+	/* Log messages into file. This method is synchronized as multiple threads access this method.
+	 * (non-Javadoc)
+	 * @see java.util.logging.Logger#log(java.util.logging.Level, java.lang.String)
+	 */
 	@Override
 	public synchronized void log(Level level, String msg) {
 		// TODO Auto-generated method stub
 		super.log(level, msg);
 		super.log(level, "\n");
+		System.out.println(msg);
 //		System.out.println(msg);
 	}
 	
-	public synchronized void log(Level level, String prefix, String msg) {
-		// TODO Auto-generated method stub
-		super.log(level, "["+prefix+"]: "+ msg);
-		super.log(level, "\n");
-//		System.out.println(msg);
+	/**
+	 * Log.
+	 *
+	 * @param level the level
+	 * @param msg the msg
+	 */
+	public synchronized void log(Level level, StackTraceElement[] msg) {
+
 	}
 	
-	public synchronized void logStackTrace(Level level, String prefix, StackTraceElement[] element){
+	
+	/**
+	 * Close the file in which log messages are written.
+	 */
+	public void close(){
+		try {
+			fileHandler.close();
+		} catch (Exception e) {			
+			System.out.println("Unable to close logger.");
+			e.printStackTrace();
+		}
+	}
+	
+	/**
+	 * Error.
+	 *
+	 * @param prefix the prefix
+	 * @param errorMsg the error msg
+	 * @param ex the ex
+	 */
+	public void error(String prefix, String errorMsg, Exception ex){
+		this.log(Level.SEVERE, "["+prefix+"]: "+errorMsg);				
+		if(ex!=null){
+			this.log(Level.FINEST, "["+prefix+"]: "+ex.getMessage());
+			StackTraceElement[] stackTrace = ex.getStackTrace();
+			for (StackTraceElement stackTraceElement : stackTrace) {	
+				this.log(Level.FINEST, stackTraceElement.toString());
+			}
+		}
 		
 	}
-	/*
-	 * Close the file in which log messages are written.
-	 * */
-	public void close(){
-		fileHandler.close();
+	
+	/**
+	 * Error.
+	 *
+	 * @param errorMsg the error msg
+	 */
+	public void error(String errorMsg){
+		Calendar c = Calendar.getInstance();		
+		String dateInStringFormat = formatter.format(c.getTime());
+		this.log(Level.SEVERE, "["+dateInStringFormat+"]: Peer [peer_ID "+peerID+"] "+errorMsg);
 	}
 	
+	/**
+	 * Debug.
+	 *
+	 * @param msg the msg
+	 */
+	public void debug(String msg){
+		Calendar c = Calendar.getInstance();		
+		String dateInStringFormat = formatter.format(c.getTime());
+		this.log(Level.INFO, "["+dateInStringFormat+"]: Peer [peer_ID "+peerID+"] "+msg);
+	}
+	
+	/* (non-Javadoc)
+	 * @see java.util.logging.Logger#warning(java.lang.String)
+	 */
+	public void warning(String msg){
+		Calendar c = Calendar.getInstance();		
+		String dateInStringFormat = formatter.format(c.getTime());
+		this.log(Level.WARNING, "["+dateInStringFormat+"]: Peer [peer_ID "+peerID+"] "+msg);
+	}
+	
+	/* (non-Javadoc)
+	 * @see java.util.logging.Logger#info(java.lang.String)
+	 */
+	public void info(String msg){
+		Calendar c = Calendar.getInstance();		
+		String dateInStringFormat = formatter.format(c.getTime());
+		this.log(Level.INFO, "["+dateInStringFormat+"]: Peer [peer_ID "+peerID+"] "+msg);		
+	}
+	
+	/**
+	 * Error.
+	 *
+	 * @param prefix the prefix
+	 * @param errorMsg the error msg
+	 */
+	public void error(String prefix, String errorMsg){
+		this.log(Level.SEVERE, "["+prefix+"]: "+errorMsg);
+	}
+	
+	/**
+	 * Debug.
+	 *
+	 * @param prefix the prefix
+	 * @param msg the msg
+	 */
 	public void debug(String prefix, String msg){
-		super.log(Level.FINEST,"["+prefix+"]: "+msg);
-		System.out.println("["+prefix+"]: "+msg);
+		this.log(Level.INFO, "["+prefix+"]: "+msg);
 	}
 	
-	public void error(String prefix, String msg, Exception ex){
-		super.log(Level.SEVERE,"["+prefix+"]: "+msg+" : "+ex.getMessage());
-		System.out.println("["+prefix+"]: "+msg+" : "+ex.getMessage());
-		logStackTrace(Level.FINEST, prefix , ex.getStackTrace());
+	/**
+	 * Warning.
+	 *
+	 * @param prefix the prefix
+	 * @param msg the msg
+	 */
+	public void warning(String prefix, String msg){
+		this.log(Level.WARNING, "["+prefix+"]: "+msg);
+	}
+	
+	/**
+	 * Info.
+	 *
+	 * @param prefix the prefix
+	 * @param msg the msg
+	 */
+	public void info(String prefix, String msg){
+		this.log(Level.INFO, "["+prefix+"]: "+msg);
 	}
 }

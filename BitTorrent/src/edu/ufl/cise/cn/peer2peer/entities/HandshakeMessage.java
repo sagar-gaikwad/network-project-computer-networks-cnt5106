@@ -43,7 +43,7 @@ public class HandshakeMessage implements PeerMessage{
 	 * @return true, if successful
 	 */
 	private boolean init(){
-		return false;
+		return true;
 	}
 	
 	/**
@@ -69,5 +69,9 @@ public class HandshakeMessage implements PeerMessage{
 	public int getMessageLength() {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+	
+	public String getPeerID(){
+		return peerID;
 	}
 }

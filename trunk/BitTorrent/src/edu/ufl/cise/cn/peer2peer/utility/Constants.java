@@ -6,23 +6,17 @@ public class Constants {
 	public static final int RAW_DATA_SIZE = 1000;
 	public static final String XYZ = "xyz";
 	
-	public static final byte HANDSHAKE_MESSAGE = 1;
-	public static final byte BITFIEELD_MESSAGE = 2;
-	public static final byte REQUEST_MESSAGE = 3;
-	public static final byte PIECE_MESSAGE = 4;
-	public static final byte INTERESTED_MESSAGE = 5;
-	public static final byte NOT_INTERESTED_MESSAGE = 6;
-	public static final byte HAVE_MESSAGE = 7;
+	public static final byte HANDSHAKE_MESSAGE = 9;
+	public static final byte BITFIELD_MESSAGE = 5;
+	public static final byte REQUEST_MESSAGE = 6;
+	public static final byte PIECE_MESSAGE = 7;
+	public static final byte INTERESTED_MESSAGE = 2;
+	public static final byte NOT_INTERESTED_MESSAGE = 3;
+	public static final byte HAVE_MESSAGE = 4;
+	public static final byte CHOKE_MESSAGE = 0;
+	public static final byte UNCHOKE_MESSAGE = 1;
 
 	//changes by rhishikesh 
-	public static final byte CHOKE_MESSAGE_CON = 0;
-	public static final byte UNCHOKE_MESSAGE_CON = 1;
-	public static final byte INTERESTED_MESSAGE_CON = 2;
-	public static final byte NOT_INTERESTED_MESSAGE_CON = 3;
-	public static final byte HAVE_MESSAGE_CON = 4;
-	public static final byte BITFIELD_MESSAGE_CON = 5;
-	public static final byte REQUEST_MESSAGE_CON = 6;
-	public static final byte PIECE_MESSAGE_CON = 7;
 	public static final String HANDSHAKE_HEADER_STRING = "CEN5501C2008SPRING";
 	
 	public static final int SIZE_OF_EMPTY_MESSAGE = 1;

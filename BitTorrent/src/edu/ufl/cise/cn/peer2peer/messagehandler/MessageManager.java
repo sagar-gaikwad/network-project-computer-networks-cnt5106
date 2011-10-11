@@ -92,11 +92,18 @@ public class MessageManager {
 
 	}
 	
-	
+	//getHaveMessage
 	
 	public byte[] getHaveMessage(byte[] payLoad){
-		return null;
+		ByteBuffer byteBuffer = ByteBuffer.allocate(9);
+		byteBuffer.putInt(9);
+		byteBuffer.put(Constants.HAVE_MESSAGE_CON);
+		byteBuffer.put(payLoad);
+		byte[] rawHaveMessage = byteBuffer.array();
+		return rawHaveMessage;
+		
 	}
+	
 	
 	public byte[] getRequestMessage(byte[] payLoad){
 		return null;

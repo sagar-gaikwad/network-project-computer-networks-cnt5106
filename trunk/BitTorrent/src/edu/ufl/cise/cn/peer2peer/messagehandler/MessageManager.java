@@ -38,8 +38,23 @@ public class MessageManager {
 		
 	}
 	
-	public byte[] geHandshakeMessage(){
-		return null;
+	public byte[] geHandshakeMessage(byte[] rawData){
+		String headerString = Constants.HANDSHAKE_HEADER_STRING;
+		char array[] = headerString.toCharArray();
+		byte[] rawHeaderMessage = new byte[32];
+		for(int i = 0; i< 18; i++){
+			rawHeaderMessage[i] = (byte)array[i];
+			
+		}
+		
+		for(int i = 18; i<31;i++){
+			rawHeaderMessage[i] = (byte)0;
+			
+		}
+		
+		rawHeaderMessage[31] = rawData[3];
+		
+		return rawHeaderMessage;
 	}
 	
 	public byte[] getRequestMessage(int pieceIndex){
@@ -96,7 +111,7 @@ public class MessageManager {
 	
 	public byte[] getHaveMessage(byte[] payLoad){
 		ByteBuffer byteBuffer = ByteBuffer.allocate(9);
-		byteBuffer.putInt(9);
+		byteBuffer.putInt(5);
 		byteBuffer.put(Constants.HAVE_MESSAGE_CON);
 		byteBuffer.put(payLoad);
 		byte[] rawHaveMessage = byteBuffer.array();
@@ -104,9 +119,27 @@ public class MessageManager {
 		
 	}
 	
+	//getbitFieldMessage
+	
+	public byte[] getBitFieldMessage(byte[] payload){
+		int payloadSize = payload.length;
+		ByteBuffer byteBuffer = ByteBuffer.allocate(payloadSize+5);
+		byteBuffer.putInt(payloadSize+1);
+		byteBuffer.put(Constants.BITFIELD_MESSAGE_CON);
+		byteBuffer.put(payload);
+		byte[] rawBitFieldMessage = byteBuffer.array();
+		return rawBitFieldMessage;
+	}
+
+	//getRequestMessage
 	
 	public byte[] getRequestMessage(byte[] payLoad){
-		return null;
+		ByteBuffer byteBuffer = ByteBuffer.allocate(9);
+		byteBuffer.putInt(5);
+		byteBuffer.put(Constants.REQUEST_MESSAGE_CON);
+		byteBuffer.put(payLoad);
+		byte[] rawRequestMessage = byteBuffer.array();
+		return rawRequestMessage;
 	}
 	//
 	
@@ -165,6 +198,21 @@ public class MessageManager {
 			return message;			
 		}
 		
+		if(messageType == Constants.HAVE_MESSAGE_CON){
+			System.out.println("This is Have message");
+			Peer2PeerMessage message = Peer2PeerMessage.getInstance();
+			message.setMessageLength(5);
+			message.setMessageLength(Constants.HAVE_MESSAGE_CON);
+			message.setPieceIndex((int)rawData[8]);
+		}
+		
+		if(messageType == Constants.REQUEST_MESSAGE_CON){
+			System.out.println("This is Request message");
+			Peer2PeerMessage message = Peer2PeerMessage.getInstance();
+			message.setMessageLength(5);
+			message.setMessageLength(Constants.REQUEST_MESSAGE_CON);
+			message.setPieceIndex((int)rawData[8]);
+		}
 		return null;
 	}
 }

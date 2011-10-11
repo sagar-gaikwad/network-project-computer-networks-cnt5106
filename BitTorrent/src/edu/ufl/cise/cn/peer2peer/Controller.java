@@ -10,6 +10,8 @@ import java.util.Set;
 import edu.ufl.cise.cn.peer2peer.filehandler.PieceManager;
 import edu.ufl.cise.cn.peer2peer.messagehandler.MessageManager;
 import edu.ufl.cise.cn.peer2peer.peerhandler.PeerHandler;
+import edu.ufl.cise.cn.peer2peer.utility.LogFactory;
+import edu.ufl.cise.cn.peer2peer.utility.MessageLogger;
 import edu.ufl.cise.cn.peer2peer.utility.PeerConfigFileReader;
 import edu.ufl.cise.cn.peer2peer.utility.PeerInfo;
 
@@ -20,7 +22,7 @@ import edu.ufl.cise.cn.peer2peer.utility.PeerInfo;
  * @author sagar
  */
 public class Controller {
-	
+	MessageLogger logger = null;
 	/** The controller. */
 	private static Controller controller = null;
 	
@@ -147,6 +149,9 @@ public class Controller {
 		}
 		
 		neighborPeerHandlerList = new ArrayList<PeerHandler>();
+		
+		logger = LogFactory.getLogger(peerID);
+		
 		return true;
 	}
 	

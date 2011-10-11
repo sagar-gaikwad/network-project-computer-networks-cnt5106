@@ -126,10 +126,38 @@ public class MessageManager {
 			System.out.println("This is choke message");
 			Peer2PeerMessage message = Peer2PeerMessage.getInstance();
 			message.setMessgageType(Constants.CHOKE_MESSAGE_CON);
-			message.setMessageLength(0);
+			message.setMessageLength(1);
 			message.setData(null);
 			return message;			
 		}
+		
+		if(messageType == Constants.UNCHOKE_MESSAGE_CON){
+			System.out.println("This is unchoke message");
+			Peer2PeerMessage message = Peer2PeerMessage.getInstance();
+			message.setMessgageType(Constants.UNCHOKE_MESSAGE_CON);
+			message.setMessageLength(1);
+			message.setData(null);
+			return message;			
+		}
+		
+		if(messageType == Constants.INTERESTED_MESSAGE_CON){
+			System.out.println("This is interested message");
+			Peer2PeerMessage message = Peer2PeerMessage.getInstance();
+			message.setMessgageType(Constants.INTERESTED_MESSAGE_CON);
+			message.setMessageLength(1);
+			message.setData(null);
+			return message;			
+		}
+		
+		if(messageType == Constants.NOT_INTERESTED_MESSAGE_CON){
+			System.out.println("This is not interested message");
+			Peer2PeerMessage message = Peer2PeerMessage.getInstance();
+			message.setMessgageType(Constants.NOT_INTERESTED_MESSAGE_CON);
+			message.setMessageLength(1);
+			message.setData(null);
+			return message;			
+		}
+		
 		return null;
 	}
 }

@@ -19,6 +19,10 @@ public class Constants {
 	public static final byte UNCHOKE_MESSAGE_CON = 1;
 	public static final byte INTERESTED_MESSAGE_CON = 2;
 	public static final byte NOT_INTERESTED_MESSAGE_CON = 3;
+	public static final byte HAVE_MESSAGE_CON = 4;
+	public static final byte BITFIELD_MESSAGE_CON = 5;
+	public static final byte REQUEST_MESSAGE_CON = 6;
+	public static final byte PIECE_MESSAGE_CON = 7;
 	
 	public static final int SIZE_OF_EMPTY_MESSAGE = 1;
 	

@@ -2,6 +2,7 @@ package edu.ufl.cise.cn.peer2peer.filehandler;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.RandomAccessFile;
 
 import edu.ufl.cise.cn.peer2peer.entities.Piece;
 import edu.ufl.cise.cn.peer2peer.utility.PropsReader;
@@ -19,7 +20,7 @@ public class PieceManager {
 	int numOfPieces ;
 	int pieceSize;
 	private static BitFieldHandler bitField ;
-	FileOutputStream outStream;
+	RandomAccessFile outStream;
 	FileInputStream inStream;
 	/**
 	 * Instantiates a new piece manager.
@@ -62,7 +63,7 @@ public class PieceManager {
 		
 		pieceSize = Integer.parseInt(PropsReader.getPropertyValue("PieceSize"));
 		numOfPieces = (int) Math.ceil(Integer.parseInt(PropsReader.getPropertyValue("FileSize")) / pieceSize) ;
-		System.out.println("PieceManager : number of pieces : "+numOfPieces);
+		System.out.println("init : PieceManager : number of pieces : "+numOfPieces);
 		try
 		{
 			bitField = new BitFieldHandler(numOfPieces);
@@ -70,25 +71,31 @@ public class PieceManager {
 			String outputFileName = new String();			
 			outputFileName = PropsReader.getPropertyValue("FileName");
 			File outFile = new File(outputFileName);
-			if(!outFile.exists()){
+			System.out.println("init : Write "+outFile.canWrite());
+			//Automatically creates new file
+			/*if(!outFile.exists()){
 				outFile.createNewFile();
 				System.out.println("PieceManager : new outputfile "+outputFileName+" created");
 			}
 			else
 			{
 				System.out.println("PieceManager : outputfile "+outputFileName+" already exists");
-			}
-			outStream = new FileOutputStream(outputFileName);
-			inStream = new FileInputStream(outputFileName);
+			}*/
+			outStream = new RandomAccessFile(outputFileName,"rw");
+			outStream.setLength(pieceSize*numOfPieces);
+			
+			System.out.println("Output stream opened");
+			//inStream = new FileInputStream(outputFileName);
 			return true;
 			
 		}
 		catch(Exception e)
 		{
-		  e.printStackTrace();	
+		  e.printStackTrace();
+		  return false;
 		}
 		
-		return false;
+		
 		
 	}
 	
@@ -101,7 +108,7 @@ public class PieceManager {
 		try {
 			outStream.close();
 			inStream.close();
-			System.out.println("PieceManager : input and output streams closed");
+			System.out.println("close : PieceManager : input and output streams closed");
 		}
 		catch (Exception e) {
 			// TODO: handle exception
@@ -119,20 +126,29 @@ public class PieceManager {
 	 */
 	synchronized public Piece getPiece(int number){
 		
-		Piece readPiece = new Piece();
-		//have to read this piece from my own output file.
-		try{
-			byte[] readBytes = new byte[pieceSize];
-			inStream.read(readBytes, number*pieceSize, pieceSize);
-			readPiece.setData(readBytes);
-		//	inStream.close();
-			return readPiece;
+		Piece readPiece = new Piece(pieceSize);
+		if(bitField.getBitFieldOn(number))
+		{
+			//have to read this piece from my own output file.
+			try{
+				byte[] readBytes = new byte[pieceSize];
+				outStream.seek(number*pieceSize);
+				outStream.read(readBytes);
+				//inStream.read(readBytes, number*pieceSize, pieceSize);
+				readPiece.setData(readBytes);
+			//	inStream.close();
+				return readPiece;
+			}
+			catch (Exception e) {
+				// TODO: handle exception
+				e.printStackTrace();
+				return null;
+			}
 		}
-		catch (Exception e) {
-			// TODO: handle exception
-			e.printStackTrace();
+		else {
+			System.err.println("Error : Wrong piece number asked");
 			return null;
-		}		
+		}
 	}
 	
 	/**
@@ -143,19 +159,30 @@ public class PieceManager {
 	 * @return if operation is successful
 	 */
 	synchronized public boolean writePiece(int number,Piece piece){
-		try {
-			//have to write this piece in Piece object array
-			outStream.write(piece.getData(), number*pieceSize, pieceSize);
-			outStream.flush();
-			bitField.setBitFieldOn(number, true);
-			bitField.printvector();
-			System.out.println("PieceManager : piece "+number+" written succesfully");
-			//outStream.close();
-			return true;
+		
+		if(!bitField.getBitFieldOn(number))
+		{
+			try {
+				//have to write this piece in Piece object array
+				outStream.seek(number*pieceSize);
+				outStream.write(piece.getData());
+				//outStream.write(piece.getData(), number*pieceSize, pieceSize);
+				//outStream.flush();
+				bitField.setBitFieldOn(number, true);
+				//bitField.printvector();
+				System.out.println("writePiece : PieceManager : piece "+number+" written succesfully");
+				//outStream.close();
+				return true;
+			}
+			catch (Exception e) {
+				// TODO: handle exception
+				e.printStackTrace();
+				return false;
+			}
 		}
-		catch (Exception e) {
-			// TODO: handle exception
-			e.printStackTrace();
+		else
+		{
+			System.err.println("Piece is already there. Why are you overwriting?? ");
 			return false;
 		}
 		
@@ -168,8 +195,7 @@ public class PieceManager {
 	 */
 	synchronized public int[] getMissingPieceNumberArray(){
 		//to return all missing piece index????
-		int i = 0; 
-		int j = 0;
+		int i = 0, j = 0;
 				
 		//Finding number of missing indexes count
 		while( i < bitField.getLength())
@@ -205,9 +231,7 @@ public class PieceManager {
 	 */
 	synchronized public int[] getAvailablePieceNumberArray(){
 		//to return all available piece number array?????
-		int i = 0; 
-		int j = 0;
-		
+		int i = 0, j = 0; 		
 		int[] available = new int[numOfPieces];
 		while( i < bitField.getLength())
 		{
@@ -216,8 +240,7 @@ public class PieceManager {
 				available[j] = i;
 				j++;
 			}
-			else
-				i++;								
+			i++;								
 		}
 		return available;
 	}

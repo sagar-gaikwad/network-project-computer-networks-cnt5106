@@ -25,7 +25,7 @@ public class BitFieldHandler {
 		{
 			bitfieldVector[i] = false;
 		}
-		printvector();
+		//printvector();
 		
 	}
 

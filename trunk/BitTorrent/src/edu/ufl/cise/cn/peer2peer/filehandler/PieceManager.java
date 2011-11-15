@@ -60,9 +60,14 @@ public class PieceManager {
 		//if input config file exists then get filename from sagar
 		//to get from sagar. file name, number of pieces		
 		//create file name as output stream
-		
-		pieceSize = Integer.parseInt(PropsReader.getPropertyValue("PieceSize"));
-		numOfPieces = (int) Math.ceil(Integer.parseInt(PropsReader.getPropertyValue("FileSize")) / pieceSize) ;
+		if(PropsReader.getPropertyValue("PieceSize")!=null)
+			pieceSize = Integer.parseInt(PropsReader.getPropertyValue("PieceSize"));
+		else 
+			System.err.println("Piece Size not in Properties file. Invalid Properties File!!!");
+		if(PropsReader.getPropertyValue("FileSize")!= null)
+			numOfPieces = (int) Math.ceil(Integer.parseInt(PropsReader.getPropertyValue("FileSize")) / pieceSize) ;
+		else
+			System.err.println("FileSize field not in Properties file. Invalid Properties File!!!");
 		System.out.println("init : PieceManager : number of pieces : "+numOfPieces);
 		try
 		{

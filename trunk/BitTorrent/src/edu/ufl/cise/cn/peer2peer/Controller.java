@@ -248,19 +248,30 @@ public class Controller {
 	}
 	
 	public HashMap<String,Float> getSpeedForAllPeers(){
-		return null;
+		//------------ Test code
+		HashMap<String, Float> peerSpeeds = new HashMap();
+		peerSpeeds.put("1010", 100.98f);
+		peerSpeeds.put("1014", 120.9f);
+		peerSpeeds.put("1015", 98.2f);
+		peerSpeeds.put("1016", 78.3f);
+		peerSpeeds.put("1017", 108.4f);
+		peerSpeeds.put("1019", 101.7f);		
+		//System.out.println("Ghanta...tumhare pappa ne bhi li thi speed measure kabhi??");		
+		return peerSpeeds;
+		//------------ Test code ends
+		//return null;
 	}
 	
 	public void chokePeers(ArrayList<String> peerList){
-		
+		System.out.println("Sagar beta...choke karo");
 	}
 	
 	public void unChokePeers(ArrayList<String> peerList){
-		
+		System.out.println("Sagar beta...unchoke karo");
 	}
 	
 	public void optimisticallyUnChokePeers(String peer){
-		
+		System.out.println("Sagar beta...optimistically choke karo :P");
 	}
 	
 	public ArrayList<String> getChokedPeerList(){

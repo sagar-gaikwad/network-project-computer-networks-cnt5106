@@ -1,6 +1,8 @@
 package edu.ufl.cise.cn.peer2peer;
 
 
+import java.util.ArrayList;
+import java.util.Random;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
@@ -51,7 +53,9 @@ public class OptimisticUnchokeManager implements Runnable{
     
 	public void run() {
 		// TODO Auto-generated method stub
-		
+		ArrayList<String> chokedPeerList = controller.getChokedPeerList();
+		Integer random = ((int)(Math.random()*1000))%chokedPeerList.size();
+		controller.optimisticallyUnChokePeers(chokedPeerList.get(random));	
 	}
 	
 	public void start(int startDelay, int intervalDelay){

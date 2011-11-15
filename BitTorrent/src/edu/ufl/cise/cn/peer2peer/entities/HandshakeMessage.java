@@ -15,6 +15,10 @@ public class HandshakeMessage implements PeerMessage{
 	/** The peer id. */
 	private String peerID;
 	
+	public void setPeerID(String peerID) {
+		this.peerID = peerID;
+	}
+
 	/**
 	 * Instantiates a new handshake message.
 	 */

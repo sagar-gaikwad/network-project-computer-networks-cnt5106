@@ -153,20 +153,24 @@ public class PeerHandler implements Runnable{
 		
 		try {
 			
-			System.out.println("Handshake and BitField Message exchanged");
+			System.out.println(LOGGER_PREFIX+": "+peerID+" : Handshake and BitField Message exchanged");
 			
 			while(controller.isOperationCompelete() == false){
 
-				System.out.println("Waiting for connection");
+				System.out.println(LOGGER_PREFIX+": "+peerID+"Waiting for connection in while(controller.isOperationCompelete() == false){");
+				
+				if(controller.isOperationCompelete() == true){
+					System.out.println(LOGGER_PREFIX+": "+peerID+": Breaking from while loop");
+					break;
+				}				
 				
 				PeerMessage message = (PeerMessage)neighborPeerInputStream.readObject();
 				
 				
 				if(message.getType() == Constants.HANDSHAKE_MESSAGE){
-					System.out.println(peerID+"Socket closed: "+neighborPeerSocket.isClosed());
-					System.out.println(peerID+": Received handshake Message");
+					System.out.println(LOGGER_PREFIX+": "+peerID+": Received handshake Message");
 					if(message instanceof HandshakeMessage){
-						System.out.println(peerID+": message instanceof HandshakeMessage");
+						System.out.println(LOGGER_PREFIX+": "+peerID+": message instanceof HandshakeMessage");
 						HandshakeMessage handshakeMessage = (HandshakeMessage)message;
 						handleHandshakeMessage(handshakeMessage);
 					}else{
@@ -176,7 +180,7 @@ public class PeerHandler implements Runnable{
 					Peer2PeerMessage peer2PeerMessage = (Peer2PeerMessage)message; 
 					handleRequestMessage(peer2PeerMessage);
 				}else if(message.getType() == Constants.BITFIELD_MESSAGE){
-					System.out.println(peerID+": Received bitfiedlMessage");
+					System.out.println(LOGGER_PREFIX+": "+peerID+": Received bitfiedlMessage");
 					handleBitFieldMessage((Peer2PeerMessage)message);
 				}else if(message.getType() == Constants.CHOKE_MESSAGE){
 					Peer2PeerMessage peer2PeerMessage = (Peer2PeerMessage)message;
@@ -210,33 +214,27 @@ public class PeerHandler implements Runnable{
 	
 	private boolean sendHandShakeMessageAndReceiveBitFieldMessage(){
 		try {
-			System.out.println(peerID+" : Sending handshake message in sendHandShakeMessageAndReceiveBitFieldMessage");
+			
+			Thread.sleep(4000);
+			
+			System.out.println(LOGGER_PREFIX+": "+peerID+" : Sending handshake message in sendHandShakeMessageAndReceiveBitFieldMessage");
 			sendHandshakeMessage(peerID);
-			System.out.println(peerID+" : waiting for bitfield in sendHandShakeMessageAndReceiveBitFieldMessage");
+			System.out.println(LOGGER_PREFIX+": "+peerID+" : waiting for bitfield in sendHandShakeMessageAndReceiveBitFieldMessage");
+								
 			
 			PeerMessage message = (PeerMessage)neighborPeerInputStream.readObject();
 			
 			if(message instanceof HandshakeMessage){
-				System.out.println("Handshake message");
+				System.out.println(LOGGER_PREFIX+": "+peerID+": received Handshake message instead of bitfield message");
 			}
 			
-			if(message instanceof BitFieldHandler){
-				System.out.println("BitFieldHandler message");
+			if(message instanceof Peer2PeerMessage){
+				System.out.println(LOGGER_PREFIX+": "+peerID+": received bitfield message");
 			}
 			
-			message = (PeerMessage)neighborPeerInputStream.readObject();
-			
-			if(message instanceof HandshakeMessage){
-				System.out.println("Handshake message");
-			}
-			
-			if(message instanceof BitFieldHandler){
-				System.out.println("BitFieldHandler message");
-			}
-			
-			Peer2PeerMessage bitfieldManager = (Peer2PeerMessage)neighborPeerInputStream.readObject();
+			Peer2PeerMessage bitfieldManager = (Peer2PeerMessage)message;
 			handleBitFieldMessage(bitfieldManager);
-			System.out.println(peerID+" : Read bitfield in sendHandShakeMessageAndReceiveBitFieldMessage");
+			System.out.println(LOGGER_PREFIX+": "+peerID+" : Read bitfield in sendHandShakeMessageAndReceiveBitFieldMessage");
 //			handleBitFieldMessage((Peer2PeerMessage)message);
 			return true;
 		} catch (Exception e) {
@@ -367,60 +365,26 @@ public class PeerHandler implements Runnable{
 		return false;
 	}
 	
-	/**
-	 * Gets the neighbor peer id.
-	 *
-	 * @return the neighbor peer id
-	 */
-	/*public void getNeighborPeerID(){
-		try {
-			ByteBuffer buffer = ByteBuffer.allocate(32);
-			
-			byte[] rawData = new byte[Constants.RAW_DATA_SIZE];
-			
-			int numbeOfBytesRead = neighborPeerInputStream.read(rawData,0,Constants.RAW_DATA_SIZE);
-			
-			while(numbeOfBytesRead > 0){
-				System.out.println("rawData: "+new String(rawData,0,numbeOfBytesRead));
-				buffer.put(rawData);
-				numbeOfBytesRead = neighborPeerInputStream.read(rawData,0,Constants.RAW_DATA_SIZE);
-			}
-			
-			PeerMessage message = messageManager.parseMessage(buffer.array());
-		
-			if(message instanceof HandshakeMessage){
-				HandshakeMessage handshakeMessage = (HandshakeMessage) message; 
-				peerID = handshakeMessage.getType()+"";			
-			}
-			
-			byte[] bitFieldMessage = controller.getBitFieldMessage();
-			
-			sendBitFieldMessage(bitFieldMessage);
-			
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}*/
-
 	public boolean exchangeHandshakeAndBitFieldMessages(){
 		try {
-			System.out.println(peerID+" : waiting for handshake message in exchangeHandshakeAndBitFieldMessages");
+			System.out.println(LOGGER_PREFIX+": "+peerID+" : waiting for handshake message in exchangeHandshakeAndBitFieldMessages");
 			PeerMessage message = (PeerMessage)neighborPeerInputStream.readObject();
 			
 			if(message instanceof HandshakeMessage){
-				System.out.println("message instanceof HandshakeMessage");
+				System.out.println(LOGGER_PREFIX+": "+peerID+" : message instanceof HandshakeMessage");
 			}
 			
-			System.out.println(peerID+" : Received handshake message in exchangeHandshakeAndBitFieldMessages");
+			System.out.println(LOGGER_PREFIX+": "+peerID+" : Received handshake message in exchangeHandshakeAndBitFieldMessages");
 			
 			if(message instanceof HandshakeMessage){
 				peerID = message.getType()+"";
 			}
 
-			System.out.println(peerID+" : Sending bitfield message in exchangeHandshakeAndBitFieldMessages");
+			Thread.sleep(4000);
+			
+			System.out.println(LOGGER_PREFIX+": "+peerID+" : Sending bitfield message in exchangeHandshakeAndBitFieldMessages");
 			sendBitFieldMessage();
-			System.out.println(peerID+" : Received bitfield  message in exchangeHandshakeAndBitFieldMessages");
+			System.out.println(LOGGER_PREFIX+": "+peerID+" : Sent bitfield  message in exchangeHandshakeAndBitFieldMessages");
 			return true;
 			
 		} catch (Exception e) {

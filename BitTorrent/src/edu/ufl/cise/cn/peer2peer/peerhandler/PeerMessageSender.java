@@ -4,6 +4,8 @@ import java.io.ObjectOutputStream;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
+import edu.ufl.cise.cn.peer2peer.entities.HandshakeMessage;
+import edu.ufl.cise.cn.peer2peer.entities.Peer2PeerMessage;
 import edu.ufl.cise.cn.peer2peer.entities.PeerMessage;
 import edu.ufl.cise.cn.peer2peer.utility.Constants;
 
@@ -23,8 +25,6 @@ public class PeerMessageSender implements Runnable {
 	
 	public static PeerMessageSender getInstance(ObjectOutputStream outputStream){
 		
-		System.out.println(LOGGER_PREFIX+" Initializing PeerMessageSender");
-				
 		PeerMessageSender messageSender = new PeerMessageSender();
 		boolean isInitialized = messageSender.init();		
 		if(isInitialized == false){
@@ -34,8 +34,6 @@ public class PeerMessageSender implements Runnable {
 		}
 		
 		messageSender.outputStream = outputStream;
-		
-		System.out.println(LOGGER_PREFIX+" Initialized PeerMessageSender successfully");
 		
 		return messageSender;
 	}
@@ -61,12 +59,37 @@ public class PeerMessageSender implements Runnable {
 		while(isShutDown == false){
 			try {				
 				PeerMessage message = messageQueue.take();
-				outputStream.reset();
+				
+				
+				/*PeerMessage newMessage = null;
+				
+				if(message instanceof HandshakeMessage){
+					System.out.println(LOGGER_PREFIX+": Creating new handshake message");
+					HandshakeMessage newHandShakeMessage = HandshakeMessage.getInstance();
+					newMessage = newHandShakeMessage;
+				}
+				
+				if(message instanceof Peer2PeerMessage){
+					System.out.println(LOGGER_PREFIX+": Creating new peer2peer message");
+					Peer2PeerMessage newPeer2PeerMessage = Peer2PeerMessage.getInstance();
+					
+					Peer2PeerMessage peerMessage = (Peer2PeerMessage) message;
+					
+					newPeer2PeerMessage.setData(peerMessage.getData());
+					newPeer2PeerMessage.setMessageLength(peerMessage.getMessageLength());
+					newPeer2PeerMessage.setMessgageType(peerMessage.getMessgageType());
+					newMessage = newPeer2PeerMessage;
+				}*/
+											
+				
 				System.out.println(LOGGER_PREFIX+": Sending message: "+message.getType());
-				outputStream.writeObject(message);
+				outputStream.writeUnshared(message);
 				outputStream.flush();
+				System.out.println(LOGGER_PREFIX+": Sent message: "+message.getType());
+				
 //				outputStream.reset();
-				System.out.println(LOGGER_PREFIX+": Message sent");
+				
+				message = null;
 			} catch (Exception e) {				
 				e.printStackTrace();
 				break;

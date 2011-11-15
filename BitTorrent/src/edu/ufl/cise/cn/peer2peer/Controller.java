@@ -247,7 +247,7 @@ public class Controller {
 		return message;
 	}
 	
-	public HashMap<String,Calendar> getSpeedForAllPeers(){
+	public HashMap<String,Float> getSpeedForAllPeers(){
 		return null;
 	}
 	

@@ -93,24 +93,29 @@ public class PeerServer implements Runnable{
 		
 		try {
 			// accpet incoming connection
+			
 			serverSocket = new ServerSocket(peerServerPortNumber);
 			
-			System.out.println(LOGGER_PREFIX+ " : Waiting for client connection");
-			
-			Socket neighborPeerSocket = serverSocket.accept();
-			
-			System.out.println(LOGGER_PREFIX+ " : Connection established");
-			
-			//create and initialize peer handler class. 
-			PeerHandler neighborPeerHandler = PeerHandler.getInstance(	neighborPeerSocket, controller);
-			
-			neighborPeerHandler.exchangeHandshakeAndBitFieldMessages();
-			
-			// keep track of encountered peer by registering it to controller
-			controller.registerPeer(neighborPeerHandler);
-			
-			// initiates protocol
-			new Thread(neighborPeerHandler).start();
+			while(true){
+				
+				
+				System.out.println(LOGGER_PREFIX+ " : Waiting for client connection");
+				
+				Socket neighborPeerSocket = serverSocket.accept();
+				
+				System.out.println(LOGGER_PREFIX+ " : Connection established");
+				
+				//create and initialize peer handler class. 
+				PeerHandler neighborPeerHandler = PeerHandler.getInstance(	neighborPeerSocket, controller);
+				
+				neighborPeerHandler.exchangeHandshakeAndBitFieldMessages();
+				
+				// keep track of encountered peer by registering it to controller
+				controller.registerPeer(neighborPeerHandler);
+				
+				// initiates protocol
+				new Thread(neighborPeerHandler).start();
+			}					
 			
 		} catch (IOException e) {
 			// TODO Auto-generated catch block

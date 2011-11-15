@@ -1,6 +1,8 @@
 package edu.ufl.cise.cn.peer2peer.entities;
 
-public class Piece {
+import java.io.Serializable;
+
+public class Piece implements Serializable{
 	private byte[] data;
 	int size;
 	

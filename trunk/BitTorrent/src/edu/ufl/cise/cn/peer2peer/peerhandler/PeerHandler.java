@@ -12,6 +12,7 @@ import edu.ufl.cise.cn.peer2peer.Controller;
 import edu.ufl.cise.cn.peer2peer.entities.HandshakeMessage;
 import edu.ufl.cise.cn.peer2peer.entities.Peer2PeerMessage;
 import edu.ufl.cise.cn.peer2peer.entities.PeerMessage;
+import edu.ufl.cise.cn.peer2peer.filehandler.BitFieldHandler;
 import edu.ufl.cise.cn.peer2peer.messagehandler.MessageManager;
 import edu.ufl.cise.cn.peer2peer.utility.Constants;
 
@@ -45,6 +46,8 @@ public class PeerHandler implements Runnable{
 	private Controller controller;
 	
 	private PeerMessageSender peerMessageSender;
+	
+	private ChunkRequester chunkRequester;
 	
 	/**
 	 * Instantiates a new peer handler.
@@ -116,7 +119,10 @@ public class PeerHandler implements Runnable{
 		}
 		
 		new Thread(peerMessageSender).start();
-		//System.out.println(LOGGER_PREFIX+" Initialized PeerHandler Successfully.");
+
+		chunkRequester = ChunkRequester.getInstance(controller, this);
+		new Thread(peerMessageSender).start();
+		
 		return true;
 	}
 	
@@ -171,8 +177,7 @@ public class PeerHandler implements Runnable{
 					handleRequestMessage(peer2PeerMessage);
 				}else if(message.getType() == Constants.BITFIELD_MESSAGE){
 					System.out.println(peerID+": Received bitfiedlMessage");
-//					Peer2PeerMessage peer2PeerMessage = (Peer2PeerMessage)message;
-//					handleBitFieldMessage(peer2PeerMessage);
+					handleBitFieldMessage((Peer2PeerMessage)message);
 				}else if(message.getType() == Constants.CHOKE_MESSAGE){
 					Peer2PeerMessage peer2PeerMessage = (Peer2PeerMessage)message;
 					handleChokeMessage(peer2PeerMessage);
@@ -208,7 +213,29 @@ public class PeerHandler implements Runnable{
 			System.out.println(peerID+" : Sending handshake message in sendHandShakeMessageAndReceiveBitFieldMessage");
 			sendHandshakeMessage(peerID);
 			System.out.println(peerID+" : waiting for bitfield in sendHandShakeMessageAndReceiveBitFieldMessage");
+			
 			PeerMessage message = (PeerMessage)neighborPeerInputStream.readObject();
+			
+			if(message instanceof HandshakeMessage){
+				System.out.println("Handshake message");
+			}
+			
+			if(message instanceof BitFieldHandler){
+				System.out.println("BitFieldHandler message");
+			}
+			
+			message = (PeerMessage)neighborPeerInputStream.readObject();
+			
+			if(message instanceof HandshakeMessage){
+				System.out.println("Handshake message");
+			}
+			
+			if(message instanceof BitFieldHandler){
+				System.out.println("BitFieldHandler message");
+			}
+			
+			Peer2PeerMessage bitfieldManager = (Peer2PeerMessage)neighborPeerInputStream.readObject();
+			handleBitFieldMessage(bitfieldManager);
 			System.out.println(peerID+" : Read bitfield in sendHandShakeMessageAndReceiveBitFieldMessage");
 //			handleBitFieldMessage((Peer2PeerMessage)message);
 			return true;
@@ -251,7 +278,12 @@ public class PeerHandler implements Runnable{
 	 * @param peer2PeerMessage the peer2 peer message
 	 */
 	private void handleBitFieldMessage(Peer2PeerMessage peer2PeerMessage) {
-		
+		try {
+			chunkRequester.setBitField(peer2PeerMessage);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	/**

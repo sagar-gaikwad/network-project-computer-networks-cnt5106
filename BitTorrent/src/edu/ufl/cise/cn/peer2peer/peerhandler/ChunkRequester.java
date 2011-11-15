@@ -1,43 +1,49 @@
 package edu.ufl.cise.cn.peer2peer.peerhandler;
 
-import java.io.ObjectOutputStream;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
-import edu.ufl.cise.cn.peer2peer.entities.PeerMessage;
+import edu.ufl.cise.cn.peer2peer.Controller;
+import edu.ufl.cise.cn.peer2peer.entities.Peer2PeerMessage;
 import edu.ufl.cise.cn.peer2peer.utility.Constants;
 
-public class PeerMessageSender implements Runnable {
+public class ChunkRequester implements Runnable {
 	
-	private static final String LOGGER_PREFIX = PeerMessageSender.class.getCanonicalName();
+	private static final String LOGGER_PREFIX = ChunkRequester.class.getCanonicalName();
 	
-	private BlockingQueue<PeerMessage> messageQueue;
-	
-	private ObjectOutputStream outputStream = null;
+	private BlockingQueue<Peer2PeerMessage> messageQueue;
 	
 	private boolean isShutDown = false;
 	
-	private PeerMessageSender(){
+	private Controller controller;
+	private PeerHandler peerHandler;
+	
+	private ChunkRequester(){
 		
 	}
 	
-	public static PeerMessageSender getInstance(ObjectOutputStream outputStream){
+	public static ChunkRequester getInstance(Controller controller, PeerHandler peerHandler){
 		
 		System.out.println(LOGGER_PREFIX+" Initializing PeerMessageSender");
-				
-		PeerMessageSender messageSender = new PeerMessageSender();
-		boolean isInitialized = messageSender.init();		
-		if(isInitialized == false){
-			messageSender.deinit();
-			messageSender = null;
+		
+		if(controller == null || peerHandler == null){
 			return null;
 		}
 		
-		messageSender.outputStream = outputStream;
+		ChunkRequester requestSender = new ChunkRequester();
+		boolean isInitialized = requestSender.init();		
+		if(isInitialized == false){
+			requestSender.deinit();
+			requestSender = null;
+			return null;
+		}
+		
+		requestSender.controller = controller;
+		requestSender.peerHandler = peerHandler;
 		
 		System.out.println(LOGGER_PREFIX+" Initialized PeerMessageSender successfully");
 		
-		return messageSender;
+		return requestSender;
 	}
 	
 	public void deinit(){
@@ -48,7 +54,7 @@ public class PeerMessageSender implements Runnable {
 	}
 	
 	private boolean init(){
-		messageQueue = new ArrayBlockingQueue<PeerMessage>(Constants.SENDER_QUEUE_SIZE);
+		messageQueue = new ArrayBlockingQueue<Peer2PeerMessage>(Constants.SENDER_QUEUE_SIZE);
 		return true;
 	}
 	
@@ -60,13 +66,8 @@ public class PeerMessageSender implements Runnable {
 		
 		while(isShutDown == false){
 			try {				
-				PeerMessage message = messageQueue.take();
-				outputStream.reset();
-				System.out.println(LOGGER_PREFIX+": Sending message: "+message.getType());
-				outputStream.writeObject(message);
-				outputStream.flush();
-//				outputStream.reset();
-				System.out.println(LOGGER_PREFIX+": Message sent");
+				Peer2PeerMessage message = messageQueue.take();
+				System.out.println(LOGGER_PREFIX+": Received Bitfield Message: "+message.getType());
 			} catch (Exception e) {				
 				e.printStackTrace();
 				break;
@@ -74,7 +75,7 @@ public class PeerMessageSender implements Runnable {
 		}
 	}
 	
-	public void sendMessage(PeerMessage message) throws InterruptedException{
+	public void setBitField(Peer2PeerMessage message) throws InterruptedException{
 		if(messageQueue == null){
 			throw new IllegalStateException("");
 		}else{

@@ -1,6 +1,8 @@
 package edu.ufl.cise.cn.peer2peer.entities;
 
-public interface PeerMessage {
+import java.io.Serializable;
+
+public interface PeerMessage extends Serializable{
 	public int getType();	
 	public int getMessageLength();
 }

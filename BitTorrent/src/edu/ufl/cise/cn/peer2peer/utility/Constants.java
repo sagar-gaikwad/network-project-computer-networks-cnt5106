@@ -47,7 +47,7 @@ public class Constants {
 	public static final byte UNCHOKE_MESSAGE = 1;
 
 	/** The Constant LOG_FILE_DIRECTORY. */
-	public static final String LOG_FILE_DIRECTORY = "~//cen5501";
+	public static final String LOG_FILE_DIRECTORY = ".";
 	
 	//changes by rhishikesh 
 	/** The Constant HANDSHAKE_HEADER_STRING. */
@@ -68,4 +68,6 @@ public class Constants {
 
 	/** The Constant PEER_INFO_FILE. */
 	public static final String PEER_INFO_FILE = "peerInfo.cfg";
+	
+	public static final int SENDER_QUEUE_SIZE = 100;
 }

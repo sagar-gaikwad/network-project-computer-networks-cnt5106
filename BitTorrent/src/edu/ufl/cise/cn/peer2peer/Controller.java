@@ -4,12 +4,19 @@ import java.io.IOException;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Set;
 
+import com.test.Peer2;
+
+import edu.ufl.cise.cn.peer2peer.entities.Peer2PeerMessage;
+import edu.ufl.cise.cn.peer2peer.entities.PeerMessage;
+import edu.ufl.cise.cn.peer2peer.entities.Piece;
 import edu.ufl.cise.cn.peer2peer.filehandler.PieceManager;
 import edu.ufl.cise.cn.peer2peer.messagehandler.MessageManager;
 import edu.ufl.cise.cn.peer2peer.peerhandler.PeerHandler;
+import edu.ufl.cise.cn.peer2peer.utility.Constants;
 import edu.ufl.cise.cn.peer2peer.utility.LogFactory;
 import edu.ufl.cise.cn.peer2peer.utility.MessageLogger;
 import edu.ufl.cise.cn.peer2peer.utility.PeerConfigFileReader;
@@ -22,6 +29,9 @@ import edu.ufl.cise.cn.peer2peer.utility.PeerInfo;
  * @author sagar
  */
 public class Controller {
+	
+	public static String LOGGER_PREFIX = Controller.class.getCanonicalName();
+	
 	MessageLogger logger = null;
 	/** The controller. */
 	private static Controller controller = null;
@@ -65,7 +75,10 @@ public class Controller {
 	 * Start P2P process.
 	 */
 	public void startProcess(){
+		System.out.println(LOGGER_PREFIX+": Starting Server process");
 		startServerThread(peerID);
+		System.out.println(LOGGER_PREFIX+": Server process started.");
+		System.out.println(LOGGER_PREFIX+": Connecting to client mentioned above the list.");
 		connectToPreviousPeerneighbors();
 	}
 	
@@ -86,10 +99,14 @@ public class Controller {
 		HashMap<String, PeerInfo> neighborPeerMap = peerConfigurationReader.getPeerInfoMap();
 		Set<String> peerIDList = neighborPeerMap.keySet();
 		
+		
+		System.out.println("Current Peer Name : "+peerID);
+		
 		for (String neighborPeerID : peerIDList) {
-
+			System.out.println("Checking neighbor client : "+neighborPeerID);
 			// if peer ID is less than the ID of this peer then it ocured previously in file. 
 			if(Integer.parseInt(neighborPeerID) < Integer.parseInt(peerID)){
+				System.out.println("Connecting neighbor client : "+neighborPeerID);
 				makeConnectionToneighborPeer(neighborPeerMap.get(neighborPeerID));
 			}
 		}
@@ -105,15 +122,21 @@ public class Controller {
 		int neighborPortNumber = peerInfo.getPortNumber();
 		
 		try {
+			
+			System.out.println(LOGGER_PREFIX+" Connection peer "+peerInfo.getPeerID() + " on "+neighborPeerHost + " port: "+neighborPortNumber);
+			
 			Socket neighborPeerSocket = new Socket(neighborPeerHost, neighborPortNumber);
 			
+			System.out.println(LOGGER_PREFIX+" Connected to peer "+peerInfo.getPeerID() + " on "+neighborPeerHost + " port: "+neighborPortNumber);
+			
 			PeerHandler neighborPeerHandler = PeerHandler.getInstance(neighborPeerSocket, this);
+			
+			neighborPeerHandler.setPeerID(peerInfo.getPeerID());
+
 			
 			neighborPeerHandlerList.add(neighborPeerHandler);
 			
 			new Thread(neighborPeerHandler).start();
-			
-			neighborPeerHandler.sendHandshakeMessage(peerInfo.getPeerID());
 			
 		} catch (UnknownHostException e) {
 			// TODO Auto-generated catch block
@@ -151,6 +174,11 @@ public class Controller {
 		neighborPeerHandlerList = new ArrayList<PeerHandler>();
 		
 		logger = LogFactory.getLogger(peerID);
+		if(logger == null){
+			System.out.println("Unable to Initialize logger object");
+			close();
+			return false;
+		}
 		
 		return true;
 	}
@@ -193,7 +221,7 @@ public class Controller {
 		return null;
 	}
 
-	public byte[] getBitFieldMessage() {
+	/*public byte[] getBitFieldMessage() {
 		int[] missingPieceArray = pieceManager.getMissingPieceNumberArray();
 		
 		// create bitFieldArray according to number of Missing Piece 
@@ -201,5 +229,41 @@ public class Controller {
 		
 		// return the bitfield array
 		return bitFieldArray;
+	}*/
+	
+	public PeerMessage getBitFieldMessage() {
+		
+		Peer2PeerMessage message = Peer2PeerMessage.getInstance(); 
+		
+		message.setMessgageType(Constants.BITFIELD_MESSAGE);
+		message.setMessageLength(5);
+		
+		Piece piece = new Piece(5);
+		piece.setData(new byte[]{1,2,3,4,5});
+		
+		message.setData(piece);
+		
+		// return the bitfield array
+		return message;
+	}
+	
+	public HashMap<String,Calendar> getSpeedForAllPeers(){
+		return null;
+	}
+	
+	public void chokePeers(ArrayList<String> peerList){
+		
+	}
+	
+	public void unChokePeers(ArrayList<String> peerList){
+		
+	}
+	
+	public void optimisticallyUnChokePeers(String peer){
+		
+	}
+	
+	public ArrayList<String> getChokedPeerList(){
+		return null;
 	}
 }

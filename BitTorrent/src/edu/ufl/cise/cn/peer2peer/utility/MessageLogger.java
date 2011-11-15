@@ -85,7 +85,9 @@ public class MessageLogger extends Logger{
 	 */
 	public void close(){
 		try {
-			fileHandler.close();
+			if(fileHandler!=null){
+				fileHandler.close();
+			}			
 		} catch (Exception e) {			
 			System.out.println("Unable to close logger.");
 			e.printStackTrace();

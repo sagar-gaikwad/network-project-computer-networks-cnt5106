@@ -5,7 +5,7 @@ public class PeerStarter {
 		
 	}
 	
-	public void testHandshake(){
-		
+	public void startProcess(){
+		Controller controller = Controller.getInstance("1");
 	}
 }

@@ -18,6 +18,8 @@ import edu.ufl.cise.cn.peer2peer.utility.PeerInfo;
  */
 public class PeerServer implements Runnable{
 	
+	public static String LOGGER_PREFIX = PeerServer.class.getName();
+	
 	/** The peer configuration reader. */
 	private PeerConfigFileReader peerConfigurationReader = null;
 	
@@ -93,12 +95,16 @@ public class PeerServer implements Runnable{
 			// accpet incoming connection
 			serverSocket = new ServerSocket(peerServerPortNumber);
 			
+			System.out.println(LOGGER_PREFIX+ " : Waiting for client connection");
+			
 			Socket neighborPeerSocket = serverSocket.accept();
+			
+			System.out.println(LOGGER_PREFIX+ " : Connection established");
 			
 			//create and initialize peer handler class. 
 			PeerHandler neighborPeerHandler = PeerHandler.getInstance(	neighborPeerSocket, controller);
 			
-			neighborPeerHandler.getNeighborPeerID();
+			neighborPeerHandler.exchangeHandshakeAndBitFieldMessages();
 			
 			// keep track of encountered peer by registering it to controller
 			controller.registerPeer(neighborPeerHandler);

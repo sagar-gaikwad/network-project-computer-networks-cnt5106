@@ -11,10 +11,16 @@ public class Server {
 //		serverSocket.getLocalPort();
 		Socket socket = serverSocket.accept();
 		
-		InputStream is = socket.getInputStream();
 		OutputStream os = socket.getOutputStream();
-				
-		os.write("Test".getBytes());
+		InputStream is = socket.getInputStream();
+		
+		System.out.println("Connected to client");
+		Thread.sleep(10000);
+		System.out.println("Writing to client");		
+		os.write("TestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTest".getBytes());
+		os.flush();
+		os.close();
+		
 		System.out.println("waiting for client to write");
 		byte[] b = new byte[10];
 		is.read(b);

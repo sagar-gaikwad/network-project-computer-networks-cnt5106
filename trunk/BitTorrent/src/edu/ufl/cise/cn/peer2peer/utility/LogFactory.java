@@ -23,6 +23,8 @@ public class LogFactory {
 			try {
 				logger.initialize();
 			} catch (Exception e) {
+				logger.close();
+				logger = null;
 				System.out.println("Unable to create or initialize logger");
 				e.printStackTrace();
 			}

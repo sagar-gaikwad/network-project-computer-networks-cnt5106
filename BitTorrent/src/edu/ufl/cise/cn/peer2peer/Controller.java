@@ -247,15 +247,15 @@ public class Controller {
 		return message;
 	}
 	
-	public HashMap<String,Float> getSpeedForAllPeers(){
+	public HashMap<String,Double> getSpeedForAllPeers(){
 		//------------ Test code
-		HashMap<String, Float> peerSpeeds = new HashMap();
-		peerSpeeds.put("1010", 100.98f);
-		peerSpeeds.put("1014", 120.9f);
-		peerSpeeds.put("1015", 98.2f);
-		peerSpeeds.put("1016", 78.3f);
-		peerSpeeds.put("1017", 108.4f);
-		peerSpeeds.put("1019", 101.7f);		
+		HashMap<String, Double> peerSpeeds = new HashMap();
+		peerSpeeds.put("1010", 100.98d);
+		peerSpeeds.put("1014", 120.9d);
+		peerSpeeds.put("1015", 98.2d);
+		peerSpeeds.put("1016", 78.3d);
+		peerSpeeds.put("1017", 108.4d);
+		peerSpeeds.put("1019", 101.7d);		
 		//System.out.println("Ghanta...tumhare pappa ne bhi li thi speed measure kabhi??");		
 		return peerSpeeds;
 		//------------ Test code ends

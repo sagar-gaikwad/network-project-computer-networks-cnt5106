@@ -248,6 +248,7 @@ public class Controller {
 	}
 	
 	public HashMap<String,Double> getSpeedForAllPeers(){
+		
 		//------------ Test code
 		HashMap<String, Double> peerSpeeds = new HashMap();
 		peerSpeeds.put("1010", 100.98d);
@@ -275,6 +276,18 @@ public class Controller {
 	}
 	
 	public ArrayList<String> getChokedPeerList(){
-		return null;
+		//----------Test code
+		ArrayList<String> chokedPeers = new ArrayList();
+		chokedPeers.add("1002");
+		chokedPeers.add("3002");
+		chokedPeers.add("4002");
+		chokedPeers.add("5002");
+		chokedPeers.add("6002");
+		chokedPeers.add("7002");
+		return chokedPeers;
+		//---Test code ends
+		//return null;
 	}
+	
+	
 }

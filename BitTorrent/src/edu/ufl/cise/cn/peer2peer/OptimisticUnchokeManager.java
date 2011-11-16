@@ -55,6 +55,7 @@ public class OptimisticUnchokeManager implements Runnable{
 		// TODO Auto-generated method stub
 		ArrayList<String> chokedPeerList = controller.getChokedPeerList();
 		Integer random = ((int)(Math.random()*1000))%chokedPeerList.size();
+		System.out.println("OptimisticUnchokeManager : random peer to unchoke is "+chokedPeerList.get(random));
 		controller.optimisticallyUnChokePeers(chokedPeerList.get(random));	
 	}
 	

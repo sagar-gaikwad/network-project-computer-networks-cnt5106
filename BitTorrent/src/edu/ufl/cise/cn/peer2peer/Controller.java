@@ -3,6 +3,8 @@ package edu.ufl.cise.cn.peer2peer;
 import java.io.IOException;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -165,7 +167,13 @@ public class Controller {
 			return false;
 		}
 		
-		pieceManager = PieceManager.getPieceManagerInstance();
+		if(PeerConfigFileReader.getInstance().getPeerInfoMap().get(peerID).isFileExists() == false){
+			pieceManager = PieceManager.getPieceManagerInstance(false);
+		}else{
+			pieceManager = PieceManager.getPieceManagerInstance(true);
+		}
+		
+
 		
 		if(pieceManager == null){
 			return false;
@@ -231,24 +239,47 @@ public class Controller {
 		return bitFieldArray;
 	}*/
 	
-	public PeerMessage getBitFieldMessage() {
+	/*public synchronized Peer2PeerMessage getBitFieldMessage() {
 		
 		Peer2PeerMessage message = Peer2PeerMessage.getInstance(); 
+		
+		int arr[] = pieceManager.getMissingPieceNumberArray();
+		
+		ByteBuffer buffer = ByteBuffer.allocate(arr.length*4);
+		
+		buffer.order(ByteOrder.BIG_ENDIAN);
+		
+		for(int i=0 ; i<arr.length ; i++){
+			buffer.putInt(arr[i]);
+		}
+		
+		byte byteArr[]  = buffer.array();
 		
 		message.setMessgageType(Constants.BITFIELD_MESSAGE);
 		message.setMessageLength(5);
 		
-		Piece piece = new Piece(5);
-		piece.setData(new byte[]{1,2,3,4,5});
+		Piece piece = new Piece(byteArr.length);
+		piece.setData(byteArr);
 		
 		message.setData(piece);
 		
-		// return the bitfield array
+		return message;
+	}*/
+	
+	
+	public synchronized Peer2PeerMessage getBitFieldMessage() {
+		
+		Peer2PeerMessage message = Peer2PeerMessage.getInstance(); 
+		
+		message.setHandler(pieceManager.getBitFieldHandler());
+		message.setMessgageType(Constants.BITFIELD_MESSAGE);
+		
+
 		return message;
 	}
 	
 	public HashMap<String,Double> getSpeedForAllPeers(){
-		
+
 		//------------ Test code
 		HashMap<String, Double> peerSpeeds = new HashMap();
 		peerSpeeds.put("1010", 100.98d);
@@ -256,7 +287,7 @@ public class Controller {
 		peerSpeeds.put("1015", 98.2d);
 		peerSpeeds.put("1016", 78.3d);
 		peerSpeeds.put("1017", 108.4d);
-		peerSpeeds.put("1019", 101.7d);		
+		peerSpeeds.put("1019", 101.7d);			
 		//System.out.println("Ghanta...tumhare pappa ne bhi li thi speed measure kabhi??");		
 		return peerSpeeds;
 		//------------ Test code ends
@@ -276,6 +307,7 @@ public class Controller {
 	}
 	
 	public ArrayList<String> getChokedPeerList(){
+
 		//----------Test code
 		ArrayList<String> chokedPeers = new ArrayList();
 		chokedPeers.add("1002");
@@ -289,5 +321,11 @@ public class Controller {
 		//return null;
 	}
 	
+	public void insertPiece(Peer2PeerMessage pieceMessage){
+		// 
+	}
 	
+	public int[] getMissingPieceIndexArray(){
+		return pieceManager.getMissingPieceNumberArray();
+	}
 }

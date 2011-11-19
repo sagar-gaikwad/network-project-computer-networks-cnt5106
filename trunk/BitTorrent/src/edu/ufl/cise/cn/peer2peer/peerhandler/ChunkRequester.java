@@ -68,6 +68,13 @@ public class ChunkRequester implements Runnable {
 			try {				
 				Peer2PeerMessage message = messageQueue.take();
 				System.out.println(LOGGER_PREFIX+": Received Bitfield Message: "+message.getType());
+				
+				// compare bit field message
+				
+				// send interested and request message to peers
+				
+				
+				
 			} catch (Exception e) {				
 				e.printStackTrace();
 				break;

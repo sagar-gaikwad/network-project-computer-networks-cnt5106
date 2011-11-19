@@ -395,25 +395,8 @@ public class PeerHandler implements Runnable{
 		return false;
 	}
 	
-	/**
-	 * Send bit field message.
-	 *
-	 * @param bitFieldMessage the bit field message
-	 * @return true, if successful
-	 */
-	private boolean sendBitFieldMessage(byte[] bitFieldMessage) {
-		try {
-			/*neighborPeerOutputStream = neighborPeerSocket.getOutputStream();
-			neighborPeerOutputStream.write(bitFieldMessage);
-			neighborPeerOutputStream.flush();
-			neighborPeerOutputStream.close();*/
-			return true;
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return false;
-	}
+
+
 
 	public void setPeerID(String peerID) {
 		this.peerID = peerID;

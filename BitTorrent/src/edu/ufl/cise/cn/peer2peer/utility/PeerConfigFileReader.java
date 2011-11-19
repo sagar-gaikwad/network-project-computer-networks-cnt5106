@@ -4,7 +4,11 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.HashMap;
+
+import com.test.ProcessStarter;
+
 
 /**
  * The Class PeerConfigFileReader.
@@ -48,7 +52,7 @@ public class PeerConfigFileReader {
 		
 		
 		try {
-			BufferedReader configFileReader =  new BufferedReader(new FileReader(Constants.PEER_INFO_FILE));
+			BufferedReader configFileReader =  new BufferedReader(new InputStreamReader(PeerConfigFileReader.class.getResourceAsStream(Constants.PEER_INFO_FILE)));
 			
 			peerInfoMap = new HashMap<String,PeerInfo>();
 			

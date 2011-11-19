@@ -67,7 +67,7 @@ public class Constants {
 	
 
 	/** The Constant PEER_INFO_FILE. */
-	public static final String PEER_INFO_FILE = "peerInfo.cfg";
+	public static final String PEER_INFO_FILE = "PeerInfo.cfg";
 	
 	public static final int SENDER_QUEUE_SIZE = 100;
 }

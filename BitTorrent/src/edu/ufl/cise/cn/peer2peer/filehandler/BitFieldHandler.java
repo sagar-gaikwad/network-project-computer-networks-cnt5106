@@ -92,4 +92,10 @@ public class BitFieldHandler {
 		}
 		System.out.println("");
 	}
+	
+	public void setBitFieldOnForAllIndexes(){
+		for(int i=0 ; i<bitfieldVector.length ; i++){
+			bitfieldVector[i] = true;
+		}
+	}
 }

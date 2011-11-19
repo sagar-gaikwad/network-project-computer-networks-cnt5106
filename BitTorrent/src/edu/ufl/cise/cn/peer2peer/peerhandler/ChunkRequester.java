@@ -1,10 +1,12 @@
 package edu.ufl.cise.cn.peer2peer.peerhandler;
 
+import java.nio.ByteBuffer;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
 import edu.ufl.cise.cn.peer2peer.Controller;
 import edu.ufl.cise.cn.peer2peer.entities.Peer2PeerMessage;
+import edu.ufl.cise.cn.peer2peer.entities.Piece;
 import edu.ufl.cise.cn.peer2peer.utility.Constants;
 
 public class ChunkRequester implements Runnable {
@@ -58,6 +60,30 @@ public class ChunkRequester implements Runnable {
 		return true;
 	}
 	
+	public int getPieceNumberToBeRequested(Peer2PeerMessage bitFieldMessage ){
+		int[] thisPeerMissingPieceArray = controller.getMissingPieceIndexArray(); 			
+
+		ByteBuffer byteBuffer = ByteBuffer.wrap(bitFieldMessage.getData().getData());
+		
+		int recievedBitFieldSize = bitFieldMessage.getData().getSize()/4;
+		
+		int[] receivedBitFieldData = new int[recievedBitFieldSize]; 
+		
+		for(int i=0 ; i<recievedBitFieldSize ; i++){
+			receivedBitFieldData[i] = byteBuffer.getInt();
+		}
+		
+		for(int i=0 ; i<thisPeerMissingPieceArray.length ; i++){
+			for(int j=0 ; j<recievedBitFieldSize ; j++){
+				if(thisPeerMissingPieceArray[i] == receivedBitFieldData[j]){
+					return thisPeerMissingPieceArray[i];
+				}
+			}
+		}
+		
+		return -1;
+	} 
+	
 	public void run() {
 		
 		if(messageQueue == null){
@@ -67,13 +93,24 @@ public class ChunkRequester implements Runnable {
 		while(isShutDown == false){
 			try {				
 				Peer2PeerMessage message = messageQueue.take();
-				System.out.println(LOGGER_PREFIX+": Received Bitfield Message: "+message.getType());
+				System.out.println(LOGGER_PREFIX+": Received Message: "+message.getType());
 				
+				Peer2PeerMessage requestMessage = Peer2PeerMessage.getInstance();
+				
+				if(message.getType() == Constants.BITFIELD_MESSAGE){
+//					int missingPieceIndex = 
+//					System.out.println(LOGGER_PREFIX+"bitfield message");
+				}
+				
+				if(message.getType() == Constants.HAVE_MESSAGE){
+					System.out.println(LOGGER_PREFIX+"have message");
+				}							
 				// compare bit field message
 				
 				// send interested and request message to peers
 				
-				
+				peerHandler.sendInterestedMessage(requestMessage);
+				peerHandler.sendRequestMessage(requestMessage);
 				
 			} catch (Exception e) {				
 				e.printStackTrace();
@@ -93,4 +130,5 @@ public class ChunkRequester implements Runnable {
 	public void shutdown(){
 		isShutDown = true;
 	}
+	
 }

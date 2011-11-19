@@ -1,5 +1,7 @@
 package edu.ufl.cise.cn.peer2peer.entities;
 
+import edu.ufl.cise.cn.peer2peer.filehandler.BitFieldHandler;
+
 // TODO: Auto-generated Javadoc
 /**
  * The Class Peer2PeerMessage.
@@ -13,6 +15,7 @@ public class Peer2PeerMessage implements PeerMessage{
 	private int messgageType;
 	private int pieceIndex;
 	private Piece data;
+	private BitFieldHandler handler = null;
 	
 	/**
 	 * Instantiates a new peer2 peer message.
@@ -101,4 +104,11 @@ public class Peer2PeerMessage implements PeerMessage{
 		this.messageLength = messageLength;
 	}
 
+	public BitFieldHandler getHandler() {
+		return handler;
+	}
+
+	public void setHandler(BitFieldHandler handler) {
+		this.handler = handler;
+	}
 }

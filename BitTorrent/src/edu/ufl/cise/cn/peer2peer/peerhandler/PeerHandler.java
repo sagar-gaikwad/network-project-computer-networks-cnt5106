@@ -258,7 +258,7 @@ public class PeerHandler implements Runnable{
 	 * @param peer2PeerMessage the peer2 peer message
 	 */
 	private void handlePieceMessage(Peer2PeerMessage peer2PeerMessage) {
-		
+		controller.insertPiece(peer2PeerMessage);
 	}
 
 	/**
@@ -352,7 +352,9 @@ public class PeerHandler implements Runnable{
 	
 	public synchronized boolean sendBitFieldMessage(){
 		try {
-			Peer2PeerMessage message = Peer2PeerMessage.getInstance();
+			
+			
+			Peer2PeerMessage message = controller.getBitFieldMessage();
 			
 			peerMessageSender.sendMessage(message);
 			
@@ -396,7 +398,23 @@ public class PeerHandler implements Runnable{
 	}
 	
 
-
+	public void sendInterestedMessage(Peer2PeerMessage interestedMessage){
+		try {
+			peerMessageSender.sendMessage(interestedMessage);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public void sendRequestMessage(Peer2PeerMessage requestMessage){
+		try {
+			peerMessageSender.sendMessage(requestMessage);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 
 	public void setPeerID(String peerID) {
 		this.peerID = peerID;

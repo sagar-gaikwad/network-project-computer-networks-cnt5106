@@ -28,16 +28,17 @@ public class PieceManager {
 	private PieceManager(){
 		
 	}
+		
 	
 	/**
 	 * Gets the piece manager instance.
 	 *
 	 * @return the piece manager instance
 	 */
-	synchronized public static PieceManager getPieceManagerInstance(){
+	synchronized public static PieceManager getPieceManagerInstance(boolean isFileExists){
 		if(pieceManagerInstance == null){
 			pieceManagerInstance = new PieceManager();
-			boolean isSuccessfullyInitialized = pieceManagerInstance.init();
+			boolean isSuccessfullyInitialized = pieceManagerInstance.init(isFileExists);
 			if(isSuccessfullyInitialized == false){
 				pieceManagerInstance = null;
 			}
@@ -53,7 +54,7 @@ public class PieceManager {
 	 * @return true, if successful
 	 */
 	//to make this private
-	public boolean init(){
+	public boolean init(boolean isFileExists){
 		
 		//initialize bit vector according to pieces and set all bits to 0
 		//doubt. how will this peer know that it has file or not
@@ -72,6 +73,11 @@ public class PieceManager {
 		try
 		{
 			bitField = new BitFieldHandler(numOfPieces);
+			
+			if(isFileExists){
+				bitField.setBitFieldOnForAllIndexes();
+			}
+			
 			//input file connection??? why???
 			String outputFileName = new String();			
 			outputFileName = PropsReader.getPropertyValue("FileName");
@@ -270,5 +276,9 @@ public class PieceManager {
 			}
 		}
 		return true;
+	}
+	
+	public BitFieldHandler getBitFieldHandler(){
+		return bitField;
 	}
 }

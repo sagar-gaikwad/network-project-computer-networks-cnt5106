@@ -21,4 +21,12 @@ public class Piece implements Serializable{
 		else
 			System.err.println("Piece Size and Data Size MisMatch");
 	}
+	
+	public int getSize(){
+		if(data == null){
+			return -1;
+		}else{
+			return data.length;
+		}		
+	}
 }

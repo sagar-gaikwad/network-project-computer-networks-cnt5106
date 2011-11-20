@@ -7,6 +7,7 @@ import java.util.concurrent.BlockingQueue;
 import edu.ufl.cise.cn.peer2peer.Controller;
 import edu.ufl.cise.cn.peer2peer.entities.Peer2PeerMessage;
 import edu.ufl.cise.cn.peer2peer.entities.Piece;
+import edu.ufl.cise.cn.peer2peer.filehandler.BitFieldHandler;
 import edu.ufl.cise.cn.peer2peer.utility.Constants;
 
 public class ChunkRequester implements Runnable {
@@ -19,6 +20,8 @@ public class ChunkRequester implements Runnable {
 	
 	private Controller controller;
 	private PeerHandler peerHandler;
+	
+	BitFieldHandler neighborPeerBitFieldhandler = null;
 	
 	private ChunkRequester(){
 		
@@ -60,27 +63,15 @@ public class ChunkRequester implements Runnable {
 		return true;
 	}
 	
-	public int getPieceNumberToBeRequested(Peer2PeerMessage bitFieldMessage ){
-		int[] thisPeerMissingPieceArray = controller.getMissingPieceIndexArray(); 			
-
-		ByteBuffer byteBuffer = ByteBuffer.wrap(bitFieldMessage.getData().getData());
+	public int getPieceNumberToBeRequested(){
+		BitFieldHandler thisPeerBitFieldhandler = controller.getBitFieldMessage().getHandler(); 			
 		
-		int recievedBitFieldSize = bitFieldMessage.getData().getSize()/4;
-		
-		int[] receivedBitFieldData = new int[recievedBitFieldSize]; 
-		
-		for(int i=0 ; i<recievedBitFieldSize ; i++){
-			receivedBitFieldData[i] = byteBuffer.getInt();
-		}
-		
-		for(int i=0 ; i<thisPeerMissingPieceArray.length ; i++){
-			for(int j=0 ; j<recievedBitFieldSize ; j++){
-				if(thisPeerMissingPieceArray[i] == receivedBitFieldData[j]){
-					return thisPeerMissingPieceArray[i];
-				}
+		for(int i=0 ; i<neighborPeerBitFieldhandler.getLength() ; i++){
+			if(thisPeerBitFieldhandler.getBitFieldOn(i) == false && neighborPeerBitFieldhandler.getBitFieldOn(i) == true){
+				return i;
 			}
 		}
-		
+
 		return -1;
 	} 
 	
@@ -96,21 +87,88 @@ public class ChunkRequester implements Runnable {
 				System.out.println(LOGGER_PREFIX+": Received Message: "+message.getType());
 				
 				Peer2PeerMessage requestMessage = Peer2PeerMessage.getInstance();
+				requestMessage.setMessgageType(Constants.REQUEST_MESSAGE);
+				
+				Peer2PeerMessage interestedMessage = Peer2PeerMessage.getInstance();
+				interestedMessage.setMessgageType(Constants.INTERESTED_MESSAGE);
 				
 				if(message.getType() == Constants.BITFIELD_MESSAGE){
-//					int missingPieceIndex = 
-//					System.out.println(LOGGER_PREFIX+"bitfield message");
+					
+					neighborPeerBitFieldhandler = message.getHandler();
+					int missingPieceIndex = getPieceNumberToBeRequested();
+					
+					if(missingPieceIndex == -1){
+						Peer2PeerMessage notInterestedMessage = Peer2PeerMessage.getInstance();
+						notInterestedMessage.setMessgageType(Constants.NOT_INTERESTED_MESSAGE);
+						peerHandler.sendNotInterestedMessage(notInterestedMessage);
+					}else{
+						interestedMessage.setPieceIndex(missingPieceIndex);
+						peerHandler.sendInterestedMessage(interestedMessage);
+						
+						requestMessage.setPieceIndex(missingPieceIndex);
+						peerHandler.sendRequestMessage(requestMessage);
+					}									
 				}
 				
 				if(message.getType() == Constants.HAVE_MESSAGE){
-					System.out.println(LOGGER_PREFIX+"have message");
-				}							
+					int pieceIndex = message.getPieceIndex();
+					neighborPeerBitFieldhandler.setBitFieldOn(pieceIndex, true);
+					
+					int missingPieceIndex = getPieceNumberToBeRequested();
+
+					if(missingPieceIndex == -1){
+						Peer2PeerMessage notInterestedMessage = Peer2PeerMessage.getInstance();
+						notInterestedMessage.setMessgageType(Constants.NOT_INTERESTED_MESSAGE);
+						peerHandler.sendNotInterestedMessage(notInterestedMessage);
+					}else{
+						interestedMessage.setPieceIndex(missingPieceIndex);
+						peerHandler.sendInterestedMessage(interestedMessage);
+						
+						requestMessage.setPieceIndex(missingPieceIndex);
+						peerHandler.sendRequestMessage(requestMessage);
+					}									
+				}
+
+				/*
+				 * We are supposed to send request message only after piece for previous request message.
+				 * */
+				if(message.getType() == Constants.PIECE_MESSAGE){
+					
+					int missingPieceIndex = getPieceNumberToBeRequested();
+
+					if(missingPieceIndex == -1){
+						// do nothing 
+					}else{
+						interestedMessage.setPieceIndex(missingPieceIndex);
+						peerHandler.sendInterestedMessage(interestedMessage);
+						
+						requestMessage.setPieceIndex(missingPieceIndex);
+						peerHandler.sendRequestMessage(requestMessage);
+					}									
+				}
+				
+				/*
+				 * We are supposed to send request message after receiving unchoke message
+				 * */
+				if(message.getType() == Constants.UNCHOKE_MESSAGE){
+					
+					int missingPieceIndex = getPieceNumberToBeRequested();
+
+					if(missingPieceIndex == -1){
+						// do nothing 
+					}else{
+						interestedMessage.setPieceIndex(missingPieceIndex);
+						peerHandler.sendInterestedMessage(interestedMessage);
+						
+						requestMessage.setPieceIndex(missingPieceIndex);
+						peerHandler.sendRequestMessage(requestMessage);
+					}									
+				}
+				
 				// compare bit field message
 				
 				// send interested and request message to peers
 				
-				peerHandler.sendInterestedMessage(requestMessage);
-				peerHandler.sendRequestMessage(requestMessage);
 				
 			} catch (Exception e) {				
 				e.printStackTrace();

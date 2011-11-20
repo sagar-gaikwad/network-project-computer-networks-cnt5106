@@ -86,7 +86,7 @@ public class PieceManager {
 			outputFileName = PropsReader.getPropertyValue("FileName");
 			
 			if(isFileExists == false){
-				outputFileName+="peerID";
+				outputFileName+="-"+peerID;
 			}
 			
 			File outFile = new File(outputFileName);

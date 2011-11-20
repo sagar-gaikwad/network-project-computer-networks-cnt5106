@@ -9,9 +9,9 @@ public class TestChokeUnchoke {
 
 	public static void main(String args[])
 	{
-		Controller control = Controller.getInstance("MohitPeer");		
+		Controller control = Controller.getInstance("1001");		
 		ChokeUnchokeManager chodManager = ChokeUnchokeManager.getInstance(control);
 		System.out.println("Test Main : Starting choke manager");
-		chodManager.start(0, 25);
+		chodManager.start(0, 5);
 	}
 }

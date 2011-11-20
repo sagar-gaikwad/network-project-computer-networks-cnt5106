@@ -15,6 +15,9 @@ import edu.ufl.cise.cn.peer2peer.utility.PropsReader;
  */
 public class PieceManager {
 	
+	
+	public static final String LOGGER_PREFIX = PieceManager.class.getName();
+	
 	/** The piece manager instance. */
 	private static PieceManager pieceManagerInstance;	
 	int numOfPieces ;
@@ -35,10 +38,10 @@ public class PieceManager {
 	 *
 	 * @return the piece manager instance
 	 */
-	synchronized public static PieceManager getPieceManagerInstance(boolean isFileExists){
+	synchronized public static PieceManager getPieceManagerInstance(boolean isFileExists, String peerID){
 		if(pieceManagerInstance == null){
 			pieceManagerInstance = new PieceManager();
-			boolean isSuccessfullyInitialized = pieceManagerInstance.init(isFileExists);
+			boolean isSuccessfullyInitialized = pieceManagerInstance.init(isFileExists,peerID);
 			if(isSuccessfullyInitialized == false){
 				pieceManagerInstance = null;
 			}
@@ -54,7 +57,7 @@ public class PieceManager {
 	 * @return true, if successful
 	 */
 	//to make this private
-	public boolean init(boolean isFileExists){
+	public boolean init(boolean isFileExists, String peerID){
 		
 		//initialize bit vector according to pieces and set all bits to 0
 		//doubt. how will this peer know that it has file or not
@@ -81,7 +84,15 @@ public class PieceManager {
 			//input file connection??? why???
 			String outputFileName = new String();			
 			outputFileName = PropsReader.getPropertyValue("FileName");
+			
+			if(isFileExists == false){
+				outputFileName+="peerID";
+			}
+			
 			File outFile = new File(outputFileName);
+			if(outFile.exists() == true){
+				System.out.println(LOGGER_PREFIX+" File Found : "+outputFileName);
+			}
 			System.out.println("init : Write "+outFile.canWrite());
 			//Automatically creates new file
 			/*if(!outFile.exists()){

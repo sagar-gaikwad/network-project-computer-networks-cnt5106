@@ -1,10 +1,12 @@
 package edu.ufl.cise.cn.peer2peer.filehandler;
 
+import java.io.Serializable;
+
 // TODO: Auto-generated Javadoc
 /**
  * The Class BitFieldHandler.
  */
-public class BitFieldHandler {
+public class BitFieldHandler implements Serializable{
 	
 	/** The bitfield vector. */
 	private boolean bitfieldVector[];

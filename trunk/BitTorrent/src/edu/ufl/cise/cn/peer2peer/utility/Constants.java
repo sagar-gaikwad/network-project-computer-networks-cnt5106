@@ -7,9 +7,6 @@ package edu.ufl.cise.cn.peer2peer.utility;
  */
 public class Constants {
 	
-	/** The Constant REQUEST_MESSAGE_TYPE. */
-	public static final int REQUEST_MESSAGE_TYPE = 1;
-	
 	/** The Constant MAX_MESSAGE_SIZE. */
 	public static final int MAX_MESSAGE_SIZE = 40000;
 	
@@ -70,4 +67,45 @@ public class Constants {
 	public static final String PEER_INFO_FILE = "PeerInfo.cfg";
 	
 	public static final int SENDER_QUEUE_SIZE = 100;
+	
+	public static String getMessageName(int i){
+		if(i == Constants.BITFIELD_MESSAGE){
+			return "BITFIELD_MESSAGE";
+		}
+		
+		if(i == Constants.REQUEST_MESSAGE){
+			return "REQUEST_MESSAGE";
+		}
+		
+		if(i == Constants.HANDSHAKE_MESSAGE){
+			return "HANDSHAKE_MESSAGE";
+		}
+		
+		if(i == Constants.CHOKE_MESSAGE){
+			return "CHOKE_MESSAGE";
+		}
+		
+		if(i == Constants.UNCHOKE_MESSAGE){
+			return "UNCHOKE_MESSAGE";
+		}
+		
+		if(i == Constants.HAVE_MESSAGE){
+			return "HAVE_MESSAGE";
+		}
+		
+		if(i == Constants.INTERESTED_MESSAGE){
+			return "INTERESTED_MESSAGE";
+		}
+		
+		if(i == Constants.NOT_INTERESTED_MESSAGE){
+			return "NOT_INTERESTED_MESSAGE";
+		}
+		
+		if(i == Constants.PIECE_MESSAGE){
+			return "PIECE_MESSAGE";
+		}
+		
+		
+		return null;
+	}
 }

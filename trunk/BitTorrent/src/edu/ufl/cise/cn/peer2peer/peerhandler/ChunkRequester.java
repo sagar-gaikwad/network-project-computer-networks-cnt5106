@@ -29,7 +29,7 @@ public class ChunkRequester implements Runnable {
 	
 	public static ChunkRequester getInstance(Controller controller, PeerHandler peerHandler){
 		
-		System.out.println(LOGGER_PREFIX+" Initializing PeerMessageSender");
+		System.out.println(LOGGER_PREFIX+" Initializing ChunkRequester");
 		
 		if(controller == null || peerHandler == null){
 			return null;
@@ -46,7 +46,7 @@ public class ChunkRequester implements Runnable {
 		requestSender.controller = controller;
 		requestSender.peerHandler = peerHandler;
 		
-		System.out.println(LOGGER_PREFIX+" Initialized PeerMessageSender successfully");
+		System.out.println(LOGGER_PREFIX+" Initialized ChunkRequester successfully");
 		
 		return requestSender;
 	}
@@ -84,7 +84,7 @@ public class ChunkRequester implements Runnable {
 		while(isShutDown == false){
 			try {				
 				Peer2PeerMessage message = messageQueue.take();
-				System.out.println(LOGGER_PREFIX+": Received Message: "+message.getType());
+				System.out.println(LOGGER_PREFIX+": Received Message: "+Constants.getMessageName(message.getType()));
 				
 				Peer2PeerMessage requestMessage = Peer2PeerMessage.getInstance();
 				requestMessage.setMessgageType(Constants.REQUEST_MESSAGE);
@@ -177,7 +177,7 @@ public class ChunkRequester implements Runnable {
 		}
 	}
 	
-	public void setBitField(Peer2PeerMessage message) throws InterruptedException{
+	public void addMessage(Peer2PeerMessage message) throws InterruptedException{
 		if(messageQueue == null){
 			throw new IllegalStateException("");
 		}else{

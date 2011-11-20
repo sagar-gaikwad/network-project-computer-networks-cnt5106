@@ -3,6 +3,8 @@ package edu.ufl.cise.cn.peer2peer;
 import edu.ufl.cise.cn.peer2peer.utility.*;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Set;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 import java.util.concurrent.Executors;
@@ -87,11 +89,37 @@ public class ChokeUnchokeManager implements Runnable {
 		ArrayList<String> unchokePeers = new ArrayList();
 		//Find top k preferred neighbours
 		
-		//creating a treemap sorted on values for selecting top k preferred neighbors
+		//creating a LinkedHashMap sorted on values for selecting top k preferred neighbors
+		Set<Entry<String,Double>> entrySet = speedMap.entrySet();
+		
+		Entry<String,Double>[] tempArr =  new Entry[speedMap.size()];
+		tempArr = entrySet.toArray(tempArr);
+		
+		for(int i=0 ; i<tempArr.length ; i++){
+			for(int j=i+1 ; j<tempArr.length ; j++){
+				if(tempArr[i].getValue().compareTo(tempArr[j].getValue()) == -1 ){
+					Entry<String,Double> tempEntry = tempArr[i];
+					tempArr[i] = tempArr[j];
+					tempArr[j] = tempEntry;
+				}
+			}
+		}						
+		//To make valuecomparator object working.
+		LinkedHashMap<String, Double> sortedSpeedMap = new LinkedHashMap<String, Double>();
+
+		
+		for(int i=0 ; i<tempArr.length ; i++){
+			sortedSpeedMap.put(tempArr[i].getKey(), tempArr[i].getValue());
+		}		
+		
 		System.out.println("SpeedMap Size"+speedMap.size());
-		ValueComparator bvc = new ValueComparator(speedMap);
-		TreeMap<String, Double> sortedSpeedMap = new TreeMap(bvc);		
-		sortedSpeedMap.putAll(speedMap);		
+		for(Entry<String, Double> entry : sortedSpeedMap.entrySet()) 
+		{
+			  String key = entry.getKey();
+			  Double value = entry.getValue();	
+			  System.out.println(" PeerID--> "+key+" Download Speed"+value);
+			  
+		}
 		System.out.println("sorted map made");
 		
 		int count = 0;

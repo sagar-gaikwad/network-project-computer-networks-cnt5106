@@ -424,6 +424,17 @@ public class PeerHandler implements Runnable{
 		}
 	}
 	
+	public void sendNotInterestedMessage(Peer2PeerMessage notInterestedMessage){
+
+		try {
+			peerMessageSender.sendMessage(notInterestedMessage);
+
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
 	public void sendRequestMessage(Peer2PeerMessage requestMessage){
 		try {
 			peerMessageSender.sendMessage(requestMessage);

@@ -50,6 +50,10 @@ public class Controller {
 	/** The peer configuration reader. */
 	private PeerConfigFileReader peerConfigurationReader = null;
 	
+	public String getPeerID() {
+		return peerID;
+	}
+
 	/** The peer id. */
 	private String peerID;
 	
@@ -168,9 +172,9 @@ public class Controller {
 		}
 		
 		if(PeerConfigFileReader.getInstance().getPeerInfoMap().get(peerID).isFileExists() == false){
-			pieceManager = PieceManager.getPieceManagerInstance(false);
+			pieceManager = PieceManager.getPieceManagerInstance(false,peerID);
 		}else{
-			pieceManager = PieceManager.getPieceManagerInstance(true);
+			pieceManager = PieceManager.getPieceManagerInstance(true,peerID);
 		}
 		
 
@@ -293,101 +297,56 @@ public class Controller {
 		//------------ Test code ends
 		//return null;
 	}
-	//sends choke message to all peers in this peerList
+	
 	public void chokePeers(ArrayList<String> peerList){
-		Peer2PeerMessage chokeMessage = Peer2PeerMessage.getInstance();
-		chokeMessage.setMessgageType(Constants.CHOKE_MESSAGE);
-		int i = 0, j = 0;
-		while(i < peerList.size())
-		{
-			String peerIDtoChoke = peerList.get(i);
-			j = 0;
-			while(j < neighborPeerHandlerList.size())
-			{
-				PeerHandler peer = neighborPeerHandlerList.get(j);
-				if(peerIDtoChoke.equals(peer.getPeerId()))
-				{
-					peer.sendChokeMessage(chokeMessage);
-				}
-				j++;
-			}
-			i++;
-		}		
-		//System.out.println("Sagar beta...choke karo");
+		System.out.println("Sagar beta...choke karo");
 	}
 	
 	public void unChokePeers(ArrayList<String> peerList){
-		Peer2PeerMessage unchokeMessage = Peer2PeerMessage.getInstance();
-		unchokeMessage.setMessgageType(Constants.UNCHOKE_MESSAGE);
-		int i = 0, j = 0;
-		while(i < peerList.size())
-		{
-			String peerIDtoUnchoke = peerList.get(i);
-			j = 0;
-			while(j < neighborPeerHandlerList.size())
-			{
-				PeerHandler peer = neighborPeerHandlerList.get(j);
-				if(peerIDtoUnchoke.equals(peer.getPeerId()))
-				{
-					peer.sendUnchokeMessage(unchokeMessage);
-				}
-				j++;
-			}
-			i++;
-		}		
 		System.out.println("Sagar beta...unchoke karo");
 	}
 	
 	public void optimisticallyUnChokePeers(String peer){
-		Peer2PeerMessage unchokeMessage = Peer2PeerMessage.getInstance();
-		unchokeMessage.setMessgageType(Constants.UNCHOKE_MESSAGE);
-		int i = 0;
-		PeerHandler peerToHandle;
-		while(i < neighborPeerHandlerList.size())
-		{
-			peerToHandle = neighborPeerHandlerList.get(i);
-			if(peer.equals(peerToHandle.getPeerId()))
-			{
-				peerToHandle.sendUnchokeMessage(unchokeMessage);
-			}
-			i++;
-		}
-		//System.out.println("Sagar beta...optimistically unchoke karo :P");
+		System.out.println("Sagar beta...optimistically choke karo :P");
 	}
 	
 	public ArrayList<String> getChokedPeerList(){
 
-		ArrayList<String> chokedPeerList = new ArrayList<String>();
-		int i = 0;
-		while(i < neighborPeerHandlerList.size())
-		{
-			PeerHandler peer = neighborPeerHandlerList.get(i);
-			if(peer.isPeerChoked())
-			{
-				chokedPeerList.add(peer.getPeerId());
-			}
-			i++;
-		}
-		
-		return chokedPeerList;		
 		//----------Test code
-		/*ArrayList<String> chokedPeers = new ArrayList();
+		ArrayList<String> chokedPeers = new ArrayList();
 		chokedPeers.add("1002");
 		chokedPeers.add("3002");
 		chokedPeers.add("4002");
 		chokedPeers.add("5002");
 		chokedPeers.add("6002");
 		chokedPeers.add("7002");
-		return chokedPeers;*/
+		return chokedPeers;
 		//---Test code ends
 		//return null;
 	}
 	
 	public void insertPiece(Peer2PeerMessage pieceMessage){
-		// 
+		pieceManager.writePiece(pieceMessage.getPieceIndex(), pieceMessage.getData());
 	}
 	
 	public int[] getMissingPieceIndexArray(){
 		return pieceManager.getMissingPieceNumberArray();
+	}
+	
+	public Peer2PeerMessage getPieceMessage(int pieceIndex){
+		Piece piece = pieceManager.getPiece(pieceIndex);
+		if(piece == null){
+			return null;
+		}else{
+			Peer2PeerMessage message = Peer2PeerMessage.getInstance();
+			message.setMessgageType(Constants.PIECE_MESSAGE);
+			message.setPieceIndex(pieceIndex);
+			message.setData(piece);
+			return message;
+		}		
+	}
+	
+	public boolean isFileDownloadComplete(){
+		return pieceManager.isFileDownloadComplete();
 	}
 }

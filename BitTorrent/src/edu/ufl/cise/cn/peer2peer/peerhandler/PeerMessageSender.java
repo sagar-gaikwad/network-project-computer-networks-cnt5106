@@ -60,32 +60,10 @@ public class PeerMessageSender implements Runnable {
 			try {				
 				PeerMessage message = messageQueue.take();
 				
-				
-				/*PeerMessage newMessage = null;
-				
-				if(message instanceof HandshakeMessage){
-					System.out.println(LOGGER_PREFIX+": Creating new handshake message");
-					HandshakeMessage newHandShakeMessage = HandshakeMessage.getInstance();
-					newMessage = newHandShakeMessage;
-				}
-				
-				if(message instanceof Peer2PeerMessage){
-					System.out.println(LOGGER_PREFIX+": Creating new peer2peer message");
-					Peer2PeerMessage newPeer2PeerMessage = Peer2PeerMessage.getInstance();
-					
-					Peer2PeerMessage peerMessage = (Peer2PeerMessage) message;
-					
-					newPeer2PeerMessage.setData(peerMessage.getData());
-					newPeer2PeerMessage.setMessageLength(peerMessage.getMessageLength());
-					newPeer2PeerMessage.setMessgageType(peerMessage.getMessgageType());
-					newMessage = newPeer2PeerMessage;
-				}*/
-											
-				
-				System.out.println(LOGGER_PREFIX+": Sending message: "+message.getType());
+//				System.out.println(LOGGER_PREFIX+": Sending message: "+Constants.getMessageName(message.getType()));
 				outputStream.writeUnshared(message);
 				outputStream.flush();
-				System.out.println(LOGGER_PREFIX+": Sent message: "+message.getType());
+				System.out.println(LOGGER_PREFIX+": Sent message: "+Constants.getMessageName(message.getType()));
 				
 //				outputStream.reset();
 				

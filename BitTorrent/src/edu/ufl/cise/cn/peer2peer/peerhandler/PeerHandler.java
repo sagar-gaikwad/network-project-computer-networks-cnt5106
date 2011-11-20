@@ -49,12 +49,29 @@ public class PeerHandler implements Runnable{
 	
 	private ChunkRequester chunkRequester;
 	
+	private boolean isChoked;
+	
 	/**
 	 * Instantiates a new peer handler.
 	 */
 	private PeerHandler(){
 		
 	}
+	
+	public String getPeerId()
+	{
+		return peerID;
+	}
+	private void setChoke(boolean message)
+	{
+		isChoked = message;
+	}
+	
+	public boolean isPeerChoked()
+	{
+		return isChoked;
+	}
+	
 	
 	/**
 	 * Gets the single instance of PeerHandler.
@@ -415,6 +432,45 @@ public class PeerHandler implements Runnable{
 			e.printStackTrace();
 		}
 	}
+	
+	public void sendChokeMessage(Peer2PeerMessage chokeMessage) {
+		try {
+			if(!isChoked)
+			{
+				peerMessageSender.sendMessage(chokeMessage);
+			}
+			else
+			{
+				System.out.println(LOGGER_PREFIX+" Already CHOKED tha..Firse kyu choke kar rahe ho???");
+			}
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public void sendUnchokeMessage(Peer2PeerMessage unchokeMessage)
+	{
+		try {
+			if(isChoked)
+			{
+				peerMessageSender.sendMessage(unchokeMessage);
+			}
+			else
+			{
+				System.out.println(LOGGER_PREFIX+" Already UNCHOKED tha..Firse kyu unchoke kar rahe ho???");
+			}
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public void handleUnchokeMessage(Peer2PeerMessage unchokeMessage)
+	{
+		
+	}
+	
 
 	public void setPeerID(String peerID) {
 		this.peerID = peerID;

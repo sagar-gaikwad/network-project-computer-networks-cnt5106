@@ -18,7 +18,7 @@ import edu.ufl.cise.cn.peer2peer.utility.PeerInfo;
  */
 public class PeerServer implements Runnable{
 	
-	public static String LOGGER_PREFIX = PeerServer.class.getName();
+	public static String LOGGER_PREFIX = PeerServer.class.getSimpleName();
 	
 	/** The peer configuration reader. */
 	private PeerConfigFileReader peerConfigurationReader = null;
@@ -92,11 +92,13 @@ public class PeerServer implements Runnable{
 		int peerServerPortNumber = serverPeerInfo.getPortNumber();
 		
 		try {
-			// accpet incoming connection
+			// accept incoming connection
 			
 			serverSocket = new ServerSocket(peerServerPortNumber);
 			
-			while(true){
+			int numberOfPeersSupposedToBeConnected = controller.getNumberOfPeersSupposedToBeConnected();
+			
+			for(int i=0 ; i<numberOfPeersSupposedToBeConnected ; i++){
 				
 				
 				System.out.println(LOGGER_PREFIX+ " : Waiting for client connection");
@@ -116,6 +118,8 @@ public class PeerServer implements Runnable{
 				// initiates protocol
 				new Thread(neighborPeerHandler).start();
 			}					
+			
+			System.out.println(LOGGER_PREFIX+": Exiting PeerServier");
 			
 		} catch (IOException e) {
 			// TODO Auto-generated catch block

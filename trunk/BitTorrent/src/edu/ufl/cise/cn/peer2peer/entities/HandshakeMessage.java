@@ -15,6 +15,10 @@ public class HandshakeMessage implements PeerMessage{
 	/** The peer id. */
 	private String peerID;
 	
+	private static int instanceCounter;
+	
+	private int messageNumber;
+	
 	public void setPeerID(String peerID) {
 		this.peerID = peerID;
 	}
@@ -47,6 +51,8 @@ public class HandshakeMessage implements PeerMessage{
 	 * @return true, if successful
 	 */
 	private boolean init(){
+		instanceCounter++;
+		messageNumber = instanceCounter; 
 		return true;
 	}
 	
@@ -77,5 +83,9 @@ public class HandshakeMessage implements PeerMessage{
 	
 	public String getPeerID(){
 		return peerID;
+	}
+
+	public int getMessageNumber() {
+		return messageNumber;
 	}
 }

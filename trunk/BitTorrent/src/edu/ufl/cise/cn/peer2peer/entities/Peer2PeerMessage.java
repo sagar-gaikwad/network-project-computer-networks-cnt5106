@@ -16,6 +16,8 @@ public class Peer2PeerMessage implements PeerMessage{
 	private int pieceIndex;
 	private Piece data;
 	private BitFieldHandler handler = null;
+	public int messageNumber = 0;
+	private static int messageCounter = 0;
 	
 	/**
 	 * Instantiates a new peer2 peer message.
@@ -34,7 +36,7 @@ public class Peer2PeerMessage implements PeerMessage{
 		boolean isSuccessful = message.init();
 		
 		if(isSuccessful == false){
-			message.close();
+			message.close();			
 			message = null;
 		}
 		
@@ -47,6 +49,8 @@ public class Peer2PeerMessage implements PeerMessage{
 	 * @return true, if successful
 	 */
 	private boolean init(){
+		messageCounter++;
+		messageNumber = messageCounter;
 		return true;
 	}
 	
@@ -110,5 +114,10 @@ public class Peer2PeerMessage implements PeerMessage{
 
 	public void setHandler(BitFieldHandler handler) {
 		this.handler = handler;
+	}
+
+	public int getMessageNumber() {
+		// TODO Auto-generated method stub
+		return messageNumber;
 	}
 }

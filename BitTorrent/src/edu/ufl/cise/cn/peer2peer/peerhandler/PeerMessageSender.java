@@ -11,7 +11,7 @@ import edu.ufl.cise.cn.peer2peer.utility.Constants;
 
 public class PeerMessageSender implements Runnable {
 	
-	private static final String LOGGER_PREFIX = PeerMessageSender.class.getCanonicalName();
+	private static final String LOGGER_PREFIX = PeerMessageSender.class.getSimpleName();
 	
 	private BlockingQueue<PeerMessage> messageQueue;
 	
@@ -19,11 +19,13 @@ public class PeerMessageSender implements Runnable {
 	
 	private boolean isShutDown = false;
 	
+	private PeerHandler handler;
+	
 	private PeerMessageSender(){
 		
 	}
 	
-	public static PeerMessageSender getInstance(ObjectOutputStream outputStream){
+	public static PeerMessageSender getInstance(ObjectOutputStream outputStream, PeerHandler handler){
 		
 		PeerMessageSender messageSender = new PeerMessageSender();
 		boolean isInitialized = messageSender.init();		
@@ -34,6 +36,7 @@ public class PeerMessageSender implements Runnable {
 		}
 		
 		messageSender.outputStream = outputStream;
+		messageSender.handler = handler;
 		
 		return messageSender;
 	}
@@ -63,7 +66,7 @@ public class PeerMessageSender implements Runnable {
 //				System.out.println(LOGGER_PREFIX+": Sending message: "+Constants.getMessageName(message.getType()));
 				outputStream.writeUnshared(message);
 				outputStream.flush();
-				System.out.println(LOGGER_PREFIX+": Sent message: "+Constants.getMessageName(message.getType()));
+				System.out.println(LOGGER_PREFIX+":["+handler.getPeerId()+"]"+": Sent message:["+message.getMessageNumber()+"]:"+Constants.getMessageName(message.getType()));
 				
 //				outputStream.reset();
 				

@@ -16,7 +16,7 @@ import edu.ufl.cise.cn.peer2peer.utility.PropsReader;
 public class PieceManager {
 	
 	
-	public static final String LOGGER_PREFIX = PieceManager.class.getName();
+	public static final String LOGGER_PREFIX = PieceManager.class.getSimpleName();
 	
 	/** The piece manager instance. */
 	private static PieceManager pieceManagerInstance;	
@@ -69,7 +69,7 @@ public class PieceManager {
 		else 
 			System.err.println("Piece Size not in Properties file. Invalid Properties File!!!");
 		if(PropsReader.getPropertyValue("FileSize")!= null)
-			numOfPieces = (int) Math.ceil(Integer.parseInt(PropsReader.getPropertyValue("FileSize")) / pieceSize) ;
+			numOfPieces = (int) Math.ceil(Integer.parseInt(PropsReader.getPropertyValue("FileSize")) / (pieceSize*1.0)) ;
 		else
 			System.err.println("FileSize field not in Properties file. Invalid Properties File!!!");
 		System.out.println("init : PieceManager : number of pieces : "+numOfPieces);

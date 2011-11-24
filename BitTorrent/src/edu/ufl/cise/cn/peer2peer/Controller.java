@@ -32,7 +32,7 @@ import edu.ufl.cise.cn.peer2peer.utility.PeerInfo;
  */
 public class Controller {
 	
-	public static String LOGGER_PREFIX = Controller.class.getCanonicalName();
+	public static String LOGGER_PREFIX = Controller.class.getSimpleName();
 	
 	MessageLogger logger = null;
 	/** The controller. */
@@ -348,5 +348,39 @@ public class Controller {
 	
 	public boolean isFileDownloadComplete(){
 		return pieceManager.isFileDownloadComplete();
+	}
+
+	public void sendHaveMessage(int pieceIndex, String fromPeerID) {
+		Peer2PeerMessage haveMessage = Peer2PeerMessage.getInstance();
+		haveMessage.setPieceIndex(pieceIndex);
+		haveMessage.setMessgageType(Constants.HAVE_MESSAGE);
+		
+		for (PeerHandler peerHandler : neighborPeerHandlerList) {
+			System.out.println(LOGGER_PREFIX+": Sending have message from "+peerID+ " to : "+peerHandler.getPeerId());
+			if(fromPeerID.equals(peerHandler.getPeerId()) == false){
+				peerHandler.sendHaveMessage(haveMessage);
+			}
+		}
+		
+	}
+
+	public int getNumberOfPeersSupposedToBeConnected() {
+		HashMap<String, PeerInfo> neighborPeerMap = peerConfigurationReader.getPeerInfoMap();
+		Set<String> peerIDList = neighborPeerMap.keySet();
+		
+		
+		System.out.println("Current Peer Name : "+peerID);
+		
+		int numberOfPeersSupposedToBeEstablishingConnection = 0;
+		
+		for (String neighborPeerID : peerIDList) {
+			System.out.println("Checking neighbor client : "+neighborPeerID);
+			// if peer ID is less than the ID of this peer then it ocured previously in file. 
+			if(Integer.parseInt(neighborPeerID) > Integer.parseInt(peerID)){
+				numberOfPeersSupposedToBeEstablishingConnection++;
+			}
+		}
+		
+		return numberOfPeersSupposedToBeEstablishingConnection;
 	}
 }

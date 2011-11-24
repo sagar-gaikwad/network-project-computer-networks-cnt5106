@@ -12,7 +12,7 @@ import edu.ufl.cise.cn.peer2peer.utility.Constants;
 
 public class ChunkRequester implements Runnable {
 	
-	private static final String LOGGER_PREFIX = ChunkRequester.class.getCanonicalName();
+	private static String LOGGER_PREFIX = ChunkRequester.class.getSimpleName();
 	
 	private BlockingQueue<Peer2PeerMessage> messageQueue;
 	
@@ -28,8 +28,7 @@ public class ChunkRequester implements Runnable {
 	}
 	
 	public static ChunkRequester getInstance(Controller controller, PeerHandler peerHandler){
-		
-		System.out.println(LOGGER_PREFIX+" Initializing ChunkRequester");
+//		System.out.println(LOGGER_PREFIX+" Initializing ChunkRequester");
 		
 		if(controller == null || peerHandler == null){
 			return null;
@@ -46,7 +45,7 @@ public class ChunkRequester implements Runnable {
 		requestSender.controller = controller;
 		requestSender.peerHandler = peerHandler;
 		
-		System.out.println(LOGGER_PREFIX+" Initialized ChunkRequester successfully");
+//		System.out.println(LOGGER_PREFIX+" Initialized ChunkRequester successfully");
 		
 		return requestSender;
 	}
@@ -84,7 +83,7 @@ public class ChunkRequester implements Runnable {
 		while(isShutDown == false){
 			try {				
 				Peer2PeerMessage message = messageQueue.take();
-				System.out.println(LOGGER_PREFIX+": Received Message: "+Constants.getMessageName(message.getType()));
+//				System.out.println(LOGGER_PREFIX+": Received Message: "+Constants.getMessageName(message.getType()));
 				
 				Peer2PeerMessage requestMessage = Peer2PeerMessage.getInstance();
 				requestMessage.setMessgageType(Constants.REQUEST_MESSAGE);

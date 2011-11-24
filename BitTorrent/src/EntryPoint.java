@@ -6,6 +6,7 @@ import java.nio.ByteOrder;
 import com.test.ProcessStarter;
 
 import edu.ufl.cise.cn.peer2peer.Controller;
+import edu.ufl.cise.cn.peer2peer.peerhandler.ChunkRequester;
 import edu.ufl.cise.cn.peer2peer.utility.PropsReader;
 
 public class EntryPoint {
@@ -19,6 +20,17 @@ public class EntryPoint {
 		Controller controller = Controller.getInstance(peerID);
 		controller.startProcess();
 		
+//		test3();
+	}
+	
+	public static void test3(){
+		System.out.println("numOfPieces: "+(int)Math.ceil( 139/ (70*1.0)) );
+	}
+	
+	public static void test2(){
+		System.out.println(": "+ChunkRequester.class.getCanonicalName());
+		System.out.println(": "+ChunkRequester.class.getName());
+		System.out.println(": "+ChunkRequester.class.getSimpleName());
 	}
 	
 	public void test(){

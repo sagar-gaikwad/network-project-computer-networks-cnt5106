@@ -192,7 +192,7 @@ public class PeerHandler implements Runnable{
 				PeerMessage message = (PeerMessage)neighborPeerInputStream.readObject();
 				
 				
-				System.out.println(LOGGER_PREFIX+": "+peerID+": RUN : Received Message:["+message.getMessageNumber()+"]: "+Constants.getMessageName(message.getType()));
+//				System.out.println(LOGGER_PREFIX+": "+peerID+": RUN : Received Message:["+message.getMessageNumber()+"]: "+Constants.getMessageName(message.getType()));
 				
 				if(message.getType() == Constants.HANDSHAKE_MESSAGE){					
 					if(message instanceof HandshakeMessage){						
@@ -201,8 +201,7 @@ public class PeerHandler implements Runnable{
 					}else{
 						// send some invalid data
 					}
-				}else if(message.getType() == Constants.REQUEST_MESSAGE){
-					System.out.println(LOGGER_PREFIX+": "+peerID+": Request Message for Piece: "+ ((Peer2PeerMessage)message).getPieceIndex() );
+				}else if(message.getType() == Constants.REQUEST_MESSAGE){					
 					Peer2PeerMessage peer2PeerMessage = (Peer2PeerMessage)message; 
 					handleRequestMessage(peer2PeerMessage);
 				}else if(message.getType() == Constants.BITFIELD_MESSAGE){					
@@ -317,6 +316,7 @@ public class PeerHandler implements Runnable{
 	 * @param peer2PeerMessage the peer2 peer message
 	 */
 	private void handleBitFieldMessage(Peer2PeerMessage peer2PeerMessage) {
+		System.out.println(LOGGER_PREFIX+": "+peerID+": BITFIELD_MESSAGE :["+peer2PeerMessage.getMessageNumber()+"]: ");
 		try {
 			chunkRequester.addMessage(peer2PeerMessage);
 			
@@ -342,6 +342,7 @@ public class PeerHandler implements Runnable{
 	 * @param handshakeMessage the handshake message
 	 */
 	synchronized private void handleHandshakeMessage(HandshakeMessage handshakeMessage){
+		System.out.println(LOGGER_PREFIX+": "+peerID+": HANDSHAKE_MESSAGE :["+handshakeMessage.getMessageNumber()+"]: ");
 		isHandshakeMessageReceived = true;
 		sendBitFieldMessage();
 		if(isHandshakeMessageReceived == true && isChunkRequestedStarted == false){
@@ -358,13 +359,14 @@ public class PeerHandler implements Runnable{
 	 * @param message the message
 	 */
 	synchronized private void handleRequestMessage(Peer2PeerMessage requestMessage){
+		System.out.println(LOGGER_PREFIX+": "+peerID+": REQUEST_MESSAGE ["+requestMessage.getMessageNumber()+"]: for PIECE: "+ requestMessage.getPieceIndex() );
 		if(isChoked == false){
 			Peer2PeerMessage pieceMessage = controller.getPieceMessage(requestMessage.getPieceIndex());
 			
 			if(pieceMessage != null){
 				try {
 					Thread.sleep(2000);
-					System.out.println(LOGGER_PREFIX+": "+peerID+": Sending Piece: "+ pieceMessage.getPieceIndex() );
+					System.out.println(LOGGER_PREFIX+": "+peerID+": Sending PIECE: "+ pieceMessage.getPieceIndex() );
 					peerMessageSender.sendMessage(pieceMessage);
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
@@ -380,6 +382,7 @@ public class PeerHandler implements Runnable{
 	 * @param message the message
 	 */
 	synchronized private void handleHaveMessage(Peer2PeerMessage haveMessage){
+		System.out.println(LOGGER_PREFIX+": "+peerID+": HAVE_MESSAGE ["+haveMessage.getMessageNumber()+"]: for PIECE: "+ haveMessage.getPieceIndex() );
 		try {
 			chunkRequester.addMessage(haveMessage);
 		} catch (InterruptedException e) {
@@ -394,7 +397,7 @@ public class PeerHandler implements Runnable{
 	 * @param message the message
 	 */
 	synchronized private void handleInterestedMessage(Peer2PeerMessage interestedMessage){
-		System.out.println(LOGGER_PREFIX+": Received interested Message from "+peerID);
+//		System.out.println(LOGGER_PREFIX+": Received interested Message from "+peerID);
 	}
 	
 	/**
@@ -403,7 +406,7 @@ public class PeerHandler implements Runnable{
 	 * @param message the message
 	 */
 	synchronized private void handleNotInterestedMessage(Peer2PeerMessage message){
-		System.out.println(LOGGER_PREFIX+": Received not interested Message from "+peerID);
+//		System.out.println(LOGGER_PREFIX+": Received not interested Message from "+peerID);
 	}
 	
 	/**

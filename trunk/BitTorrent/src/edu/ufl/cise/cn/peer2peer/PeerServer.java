@@ -89,6 +89,7 @@ public class PeerServer implements Runnable{
 		PeerInfo serverPeerInfo = peerInfoMap.get(peerServerID);
 		
 //		String peerServerHostAddress = serverPeerInfo.getHostAddress();
+		System.out.println(LOGGER_PREFIX+" : Starting server on : "+serverPeerInfo.getHostAddress() +" Port number : "+serverPeerInfo.getPortNumber());
 		int peerServerPortNumber = serverPeerInfo.getPortNumber();
 		
 		try {

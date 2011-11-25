@@ -232,44 +232,6 @@ public class Controller {
 		// TODO Auto-generated method stub
 		return null;
 	}
-
-	/*public byte[] getBitFieldMessage() {
-		int[] missingPieceArray = pieceManager.getMissingPieceNumberArray();
-		
-		// create bitFieldArray according to number of Missing Piece 
-		byte[] bitFieldArray = new byte[10];
-		
-		// return the bitfield array
-		return bitFieldArray;
-	}*/
-	
-	/*public synchronized Peer2PeerMessage getBitFieldMessage() {
-		
-		Peer2PeerMessage message = Peer2PeerMessage.getInstance(); 
-		
-		int arr[] = pieceManager.getMissingPieceNumberArray();
-		
-		ByteBuffer buffer = ByteBuffer.allocate(arr.length*4);
-		
-		buffer.order(ByteOrder.BIG_ENDIAN);
-		
-		for(int i=0 ; i<arr.length ; i++){
-			buffer.putInt(arr[i]);
-		}
-		
-		byte byteArr[]  = buffer.array();
-		
-		message.setMessgageType(Constants.BITFIELD_MESSAGE);
-		message.setMessageLength(5);
-		
-		Piece piece = new Piece(byteArr.length);
-		piece.setData(byteArr);
-		
-		message.setData(piece);
-		
-		return message;
-	}*/
-	
 	
 	public synchronized Peer2PeerMessage getBitFieldMessage() {
 		

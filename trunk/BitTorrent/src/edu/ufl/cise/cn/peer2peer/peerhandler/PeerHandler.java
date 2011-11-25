@@ -59,6 +59,10 @@ public class PeerHandler implements Runnable{
 	
 	private boolean isPieceMessageForPreviousMessageReceived = true;
 	
+	private long downloadStartTime = 0;
+	
+	private int downloadDataSize = 0;
+	
 	/**
 	 * Instantiates a new peer handler.
 	 */
@@ -291,8 +295,11 @@ public class PeerHandler implements Runnable{
 		controller.insertPiece(pieceMessage);
 		controller.sendHaveMessage(pieceMessage.getPieceIndex(),peerID);
 		
-		System.out.println(LOGGER_PREFIX+": Inserted PieceMessage");
+		downloadDataSize += pieceMessage.getData().getSize();
+		
+		System.out.println(LOGGER_PREFIX+": Inserted PieceMessage");		
 		setPieceMessageForPreviousMessageReceived(true);
+		System.out.println(LOGGER_PREFIX+" Download Speed: "+getDownloadSpeed());
 		try {			
 			chunkRequester.addMessage(pieceMessage);
 		} catch (InterruptedException e) {
@@ -307,7 +314,7 @@ public class PeerHandler implements Runnable{
 	 * @param peer2PeerMessage the peer2 peer message
 	 */
 	private void handleChokeMessage(Peer2PeerMessage peer2PeerMessage) {
-		isThisPeerChokedByNeighborPeer = true;
+		isThisPeerChokedByNeighborPeer = true;		
 	}
 
 	/**
@@ -326,6 +333,8 @@ public class PeerHandler implements Runnable{
 			if(isHandshakeMessageReceived == true && isChunkRequestedStarted == false){
 				System.out.println(LOGGER_PREFIX+": "+peerID+": Starting Chunk Requested in BitField handler" );
 				new Thread(chunkRequester).start();
+				startMeasuringDownloadTime();
+
 				// to avoid creation of multiple chunk requested threads.
 				isChunkRequestedStarted = true;
 			}
@@ -346,8 +355,9 @@ public class PeerHandler implements Runnable{
 		isHandshakeMessageReceived = true;
 		sendBitFieldMessage();
 		if(isHandshakeMessageReceived == true && isChunkRequestedStarted == false){
-			System.out.println(LOGGER_PREFIX+": "+peerID+": Starting Chunk Requested HandShakeMessage handler" );
+			System.out.println(LOGGER_PREFIX+": "+peerID+": Starting Chunk Requested HandShakeMessage handler" );			
 			new Thread(chunkRequester).start();
+			startMeasuringDownloadTime();
 			// to avoid creation of multiple chunk requested threads.
 			isChunkRequestedStarted = true;
 		}
@@ -502,10 +512,11 @@ public class PeerHandler implements Runnable{
 		}
 	}
 	
-	public void sendChokeMessage(Peer2PeerMessage chokeMessage) {
+	public void sendChokeMessage(Peer2PeerMessage chokeMessage) {		
 		try {
 			if(isChoked == false)
 			{
+				startMeasuringDownloadTime();
 				setChoke(true);
 				peerMessageSender.sendMessage(chokeMessage);
 			}
@@ -524,6 +535,7 @@ public class PeerHandler implements Runnable{
 		try {
 			if(isChoked == true)
 			{
+				startMeasuringDownloadTime();
 				setChoke(false);
 				peerMessageSender.sendMessage(unchokeMessage);
 			}
@@ -568,5 +580,19 @@ public class PeerHandler implements Runnable{
 	public void setPieceMessageForPreviousMessageReceived(
 			boolean isPieceMessageForPreviousMessageReceived) {
 		this.isPieceMessageForPreviousMessageReceived = isPieceMessageForPreviousMessageReceived;
+	}
+	
+	private void startMeasuringDownloadTime(){
+		downloadStartTime = System.currentTimeMillis();
+		downloadDataSize = 0;
+	}
+	
+	public double getDownloadSpeed(){
+		long timePeriod = System.currentTimeMillis() - downloadStartTime;
+		if(timePeriod != 0){
+			return ((downloadDataSize * 1.0) / (timePeriod * 1.0) );
+		}else{
+			return 0;
+		} 
 	}
 }

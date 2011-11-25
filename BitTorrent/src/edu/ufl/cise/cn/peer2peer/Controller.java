@@ -323,7 +323,6 @@ public class Controller {
 				peerHandler.sendHaveMessage(haveMessage);
 			}
 		}
-		
 	}
 
 	public int getNumberOfPeersSupposedToBeConnected() {

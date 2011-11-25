@@ -12,17 +12,31 @@ import edu.ufl.cise.cn.peer2peer.utility.PropsReader;
 
 public class EntryPoint {
 	public static void main(String args[]){
-		String peerID = args[0];
+		/*String peerID = args[0];
 		String hostAddress = args[1];
 		String portNumber = args[2];
 		String isFileExists = args[3];
 		
 		
 		Controller controller = Controller.getInstance(peerID);
-		controller.startProcess();
+		controller.startProcess();*/
 		
 //		test3();
 //		test4();
+		test5();
+	}
+	
+	public static void test5(){
+		try {
+			long time1 = System.currentTimeMillis();
+			System.out.println("Time 1: "+time1);
+			Thread.sleep(1230);
+			long time2 = System.currentTimeMillis();
+			System.out.println("Time 2: "+time2);
+			System.out.println("Time Difference: "+ (time2-time1));
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
 	}
 	
 	

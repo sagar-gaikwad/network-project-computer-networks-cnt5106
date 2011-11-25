@@ -1,12 +1,11 @@
 package edu.ufl.cise.cn.peer2peer.peerhandler;
 
-import java.nio.ByteBuffer;
+import java.util.Random;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
 import edu.ufl.cise.cn.peer2peer.Controller;
 import edu.ufl.cise.cn.peer2peer.entities.Peer2PeerMessage;
-import edu.ufl.cise.cn.peer2peer.entities.Piece;
 import edu.ufl.cise.cn.peer2peer.filehandler.BitFieldHandler;
 import edu.ufl.cise.cn.peer2peer.utility.Constants;
 
@@ -62,16 +61,25 @@ public class ChunkRequester implements Runnable {
 		return true;
 	}
 	
+	int [] pieceIndexArray = new int[1000];	
+	
 	public int getPieceNumberToBeRequested(){
 		BitFieldHandler thisPeerBitFieldhandler = controller.getBitFieldMessage().getHandler(); 			
-		
-		for(int i=0 ; i<neighborPeerBitFieldhandler.getLength() ; i++){
+		int count = 0;
+		for(int i=0 ; i<neighborPeerBitFieldhandler.getLength() && count<pieceIndexArray.length ; i++){
 			if(thisPeerBitFieldhandler.getBitFieldOn(i) == false && neighborPeerBitFieldhandler.getBitFieldOn(i) == true){
-				return i;
+				pieceIndexArray[count] = i;
+				count++;
 			}
 		}
-
-		return -1;
+		
+		if(count != 0){
+			Random random = new Random();
+			int index = random.nextInt(count);
+			return pieceIndexArray[index];
+		}else{
+			return -1;
+		}	
 	} 
 	
 	public void run() {
@@ -120,11 +128,14 @@ public class ChunkRequester implements Runnable {
 						notInterestedMessage.setMessgageType(Constants.NOT_INTERESTED_MESSAGE);
 						peerHandler.sendNotInterestedMessage(notInterestedMessage);
 					}else{
-						interestedMessage.setPieceIndex(missingPieceIndex);
-						peerHandler.sendInterestedMessage(interestedMessage);
-						
-						requestMessage.setPieceIndex(missingPieceIndex);
-						peerHandler.sendRequestMessage(requestMessage);
+						if(peerHandler.isPieceMessageForPreviousMessageReceived() == true){
+							peerHandler.setPieceMessageForPreviousMessageReceived(false);
+							interestedMessage.setPieceIndex(missingPieceIndex);
+							peerHandler.sendInterestedMessage(interestedMessage);
+							
+							requestMessage.setPieceIndex(missingPieceIndex);
+							peerHandler.sendRequestMessage(requestMessage);
+						}	
 					}									
 				}
 
@@ -138,11 +149,14 @@ public class ChunkRequester implements Runnable {
 					if(missingPieceIndex == -1){
 						// do nothing 
 					}else{
-						interestedMessage.setPieceIndex(missingPieceIndex);
-						peerHandler.sendInterestedMessage(interestedMessage);
-						
-						requestMessage.setPieceIndex(missingPieceIndex);
-						peerHandler.sendRequestMessage(requestMessage);
+						if(peerHandler.isPieceMessageForPreviousMessageReceived() == true){
+							peerHandler.setPieceMessageForPreviousMessageReceived(false);
+							interestedMessage.setPieceIndex(missingPieceIndex);
+							peerHandler.sendInterestedMessage(interestedMessage);
+							
+							requestMessage.setPieceIndex(missingPieceIndex);
+							peerHandler.sendRequestMessage(requestMessage);
+						}						
 					}									
 				}
 				
@@ -153,6 +167,8 @@ public class ChunkRequester implements Runnable {
 					
 					int missingPieceIndex = getPieceNumberToBeRequested();
 
+					peerHandler.setPieceMessageForPreviousMessageReceived(false);
+					
 					if(missingPieceIndex == -1){
 						// do nothing 
 					}else{

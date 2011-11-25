@@ -57,6 +57,8 @@ public class PeerHandler implements Runnable{
 	
 	private boolean isChunkRequestedStarted = false;
 	
+	private boolean isPieceMessageForPreviousMessageReceived = true;
+	
 	/**
 	 * Instantiates a new peer handler.
 	 */
@@ -180,7 +182,7 @@ public class PeerHandler implements Runnable{
 			
 			while(controller.isOperationCompelete() == false){
 
-				System.out.println(LOGGER_PREFIX+": "+peerID+" : Waiting for connection in while(controller.isOperationCompelete() == false){");
+//				System.out.println(LOGGER_PREFIX+": "+peerID+" : Waiting for connection in while(controller.isOperationCompelete() == false){");
 				
 				if(controller.isOperationCompelete() == true){
 					System.out.println(LOGGER_PREFIX+": "+peerID+": Breaking from while loop");
@@ -291,7 +293,8 @@ public class PeerHandler implements Runnable{
 		controller.sendHaveMessage(pieceMessage.getPieceIndex(),peerID);
 		
 		System.out.println(LOGGER_PREFIX+": Inserted PieceMessage");
-		try {
+		setPieceMessageForPreviousMessageReceived(true);
+		try {			
 			chunkRequester.addMessage(pieceMessage);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
@@ -360,7 +363,7 @@ public class PeerHandler implements Runnable{
 			
 			if(pieceMessage != null){
 				try {
-					Thread.sleep(1000);
+					Thread.sleep(2000);
 					System.out.println(LOGGER_PREFIX+": "+peerID+": Sending Piece: "+ pieceMessage.getPieceIndex() );
 					peerMessageSender.sendMessage(pieceMessage);
 				} catch (InterruptedException e) {
@@ -553,5 +556,14 @@ public class PeerHandler implements Runnable{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+	
+	public boolean isPieceMessageForPreviousMessageReceived() {
+		return isPieceMessageForPreviousMessageReceived;
+	}
+
+	public void setPieceMessageForPreviousMessageReceived(
+			boolean isPieceMessageForPreviousMessageReceived) {
+		this.isPieceMessageForPreviousMessageReceived = isPieceMessageForPreviousMessageReceived;
 	}
 }

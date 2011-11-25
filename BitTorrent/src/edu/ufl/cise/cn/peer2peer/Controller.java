@@ -356,7 +356,7 @@ public class Controller {
 		haveMessage.setMessgageType(Constants.HAVE_MESSAGE);
 		
 		for (PeerHandler peerHandler : neighborPeerHandlerList) {
-			System.out.println(LOGGER_PREFIX+": Sending have message from "+peerID+ " to : "+peerHandler.getPeerId());
+//			System.out.println(LOGGER_PREFIX+": Sending have message from "+peerID+ " to : "+peerHandler.getPeerId());
 			if(fromPeerID.equals(peerHandler.getPeerId()) == false){
 				peerHandler.sendHaveMessage(haveMessage);
 			}

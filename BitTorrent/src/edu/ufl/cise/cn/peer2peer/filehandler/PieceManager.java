@@ -192,7 +192,7 @@ public class PieceManager {
 				//outStream.flush();
 				bitField.setBitFieldOn(number, true);
 				//bitField.printvector();
-				System.out.println("writePiece : PieceManager : piece "+number+" written succesfully");
+//				System.out.println("writePiece : PieceManager : piece "+number+" written succesfully");
 				//outStream.close();
 				return true;
 			}

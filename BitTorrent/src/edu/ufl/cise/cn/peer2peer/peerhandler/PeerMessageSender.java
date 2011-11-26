@@ -53,6 +53,18 @@ public class PeerMessageSender implements Runnable {
 		return true;
 	}
 	
+	public void printMessageDetails(PeerMessage message){
+		if(message.getType() != Constants.HANDSHAKE_MESSAGE && message.getType() != Constants.HAVE_MESSAGE && message.getType() != Constants.NOT_INTERESTED_MESSAGE && message.getType() != Constants.INTERESTED_MESSAGE){
+			if(message.getType() != Constants.PIECE_MESSAGE || message.getType() != Constants.REQUEST_MESSAGE){
+//				System.out.println(LOGGER_PREFIX+": Sent message:["+message.getMessageNumber()+"]:"+Constants.getMessageName(message.getType()) +" Piece Number : "+((Peer2PeerMessage)message).getPieceIndex());
+				System.out.println(LOGGER_PREFIX+":["+handler.getPeerId()+"]"+": Sent message:["+message.getMessageNumber()+"]:"+Constants.getMessageName(message.getType()) +" Piece Number : "+((Peer2PeerMessage)message).getPieceIndex());
+			}else{
+//				System.out.println(LOGGER_PREFIX+": Sent message:["+message.getMessageNumber()+"]:"+Constants.getMessageName(message.getType()) );
+				System.out.println(LOGGER_PREFIX+":["+handler.getPeerId()+"]"+": Sent message:["+message.getMessageNumber()+"]:"+Constants.getMessageName(message.getType()));
+			}			
+		}		
+	}
+	
 	public void run() {
 		
 		if(messageQueue == null){
@@ -66,10 +78,8 @@ public class PeerMessageSender implements Runnable {
 //				System.out.println(LOGGER_PREFIX+": Sending message: "+Constants.getMessageName(message.getType()));
 				outputStream.writeUnshared(message);
 				outputStream.flush();
-				System.out.println(LOGGER_PREFIX+":["+handler.getPeerId()+"]"+": Sent message:["+message.getMessageNumber()+"]:"+Constants.getMessageName(message.getType()));
-				
-//				outputStream.reset();
-				
+				printMessageDetails(message);				
+//				outputStream.reset();				
 				message = null;
 			} catch (Exception e) {				
 				e.printStackTrace();

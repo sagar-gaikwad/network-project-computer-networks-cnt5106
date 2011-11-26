@@ -7,23 +7,59 @@ import java.util.Random;
 import com.test.ProcessStarter;
 
 import edu.ufl.cise.cn.peer2peer.Controller;
+import edu.ufl.cise.cn.peer2peer.entities.Peer2PeerMessage;
 import edu.ufl.cise.cn.peer2peer.peerhandler.ChunkRequester;
+import edu.ufl.cise.cn.peer2peer.peerhandler.PeerMessageSender;
+import edu.ufl.cise.cn.peer2peer.utility.Constants;
 import edu.ufl.cise.cn.peer2peer.utility.PropsReader;
 
 public class EntryPoint {
 	public static void main(String args[]){
-		/*String peerID = args[0];
+		String peerID = args[0];
 		String hostAddress = args[1];
 		String portNumber = args[2];
 		String isFileExists = args[3];
 		
 		
 		Controller controller = Controller.getInstance(peerID);
-		controller.startProcess();*/
+		controller.startProcess();
 		
 //		test3();
 //		test4();
-		test5();
+//		test5();
+//		test6();
+	}
+	
+	public static void test6(){
+		PeerMessageSender sender = PeerMessageSender.getInstance(null, null);
+		Peer2PeerMessage message = Peer2PeerMessage.getInstance();
+		
+		message.setMessgageType(Constants.HANDSHAKE_MESSAGE);
+		sender.printMessageDetails(message);
+		
+		message.setMessgageType(Constants.BITFIELD_MESSAGE);
+		sender.printMessageDetails(message);
+		
+		message.setMessgageType(Constants.REQUEST_MESSAGE);
+		sender.printMessageDetails(message);
+		
+		message.setMessgageType(Constants.PIECE_MESSAGE);
+		sender.printMessageDetails(message);
+		
+		message.setMessgageType(Constants.INTERESTED_MESSAGE);
+		sender.printMessageDetails(message);
+		
+		message.setMessgageType(Constants.NOT_INTERESTED_MESSAGE);
+		sender.printMessageDetails(message);
+		
+		message.setMessgageType(Constants.HAVE_MESSAGE);
+		sender.printMessageDetails(message);
+		
+		message.setMessgageType(Constants.CHOKE_MESSAGE);
+		sender.printMessageDetails(message);
+		
+		message.setMessgageType(Constants.UNCHOKE_MESSAGE);
+		sender.printMessageDetails(message);
 	}
 	
 	public static void test5(){
@@ -41,11 +77,11 @@ public class EntryPoint {
 	
 	
 	public static void test4(){
-		System.out.println(" : "+new Random().nextInt(1000));
-		System.out.println(" : "+new Random().nextInt(1000));
-		System.out.println(" : "+new Random().nextInt(1000));
-		System.out.println(" : "+new Random().nextInt(1000));
-		System.out.println(" : "+new Random().nextInt(1000));
+		System.out.println(" : "+new Random().nextInt(2));
+		System.out.println(" : "+new Random().nextInt(2));
+		System.out.println(" : "+new Random().nextInt(2));
+		System.out.println(" : "+new Random().nextInt(2));
+		System.out.println(" : "+new Random().nextInt(2));
 	}
 	
 	public static void test3(){

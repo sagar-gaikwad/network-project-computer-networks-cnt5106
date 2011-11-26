@@ -68,6 +68,10 @@ public class Constants {
 	
 	public static final int SENDER_QUEUE_SIZE = 100;
 	
+	public static final String CHOKE_UNCHOKE_INTERVAL = "UnchokingInterval";
+	
+	public static final String OPTIMISTIC_UNCHOKE_INTERVAL = "OptimisticUnchokingInterval";
+	
 	public static String getMessageName(int i){
 		if(i == Constants.BITFIELD_MESSAGE){
 			return "BITFIELD_MESSAGE";

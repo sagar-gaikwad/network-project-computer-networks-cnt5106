@@ -239,7 +239,7 @@ public class PeerHandler implements Runnable{
 		}
 	}
 	
-	private boolean sendHandShakeMessageAndReceiveBitFieldMessage(){
+	synchronized private boolean sendHandShakeMessageAndReceiveBitFieldMessage(){
 		try {
 			
 			Thread.sleep(4000);
@@ -275,7 +275,7 @@ public class PeerHandler implements Runnable{
 	 *
 	 * @param peer2PeerMessage the peer2 peer message
 	 */
-	private void handleUnchockMessage(Peer2PeerMessage unchokeMessage) {
+	synchronized private void handleUnchockMessage(Peer2PeerMessage unchokeMessage) {
 		isThisPeerChokedByNeighborPeer = false;
 		try {
 			chunkRequester.addMessage(unchokeMessage);
@@ -290,16 +290,16 @@ public class PeerHandler implements Runnable{
 	 *
 	 * @param peer2PeerMessage the peer2 peer message
 	 */
-	private void handlePieceMessage(Peer2PeerMessage pieceMessage) {
+	synchronized private void handlePieceMessage(Peer2PeerMessage pieceMessage) {
 		
 		controller.insertPiece(pieceMessage);
 		controller.sendHaveMessage(pieceMessage.getPieceIndex(),peerID);
 		
 		downloadDataSize += pieceMessage.getData().getSize();
 		
-		System.out.println(LOGGER_PREFIX+": Inserted PieceMessage");		
+//		System.out.println(LOGGER_PREFIX+": Inserted PieceMessage");		
 		setPieceMessageForPreviousMessageReceived(true);
-		System.out.println(LOGGER_PREFIX+" Download Speed: "+getDownloadSpeed());
+//		System.out.println(LOGGER_PREFIX+" Download Speed: "+getDownloadSpeed());
 		try {			
 			chunkRequester.addMessage(pieceMessage);
 		} catch (InterruptedException e) {
@@ -322,7 +322,7 @@ public class PeerHandler implements Runnable{
 	 *
 	 * @param peer2PeerMessage the peer2 peer message
 	 */
-	private void handleBitFieldMessage(Peer2PeerMessage peer2PeerMessage) {
+	synchronized private void handleBitFieldMessage(Peer2PeerMessage peer2PeerMessage) {
 		System.out.println(LOGGER_PREFIX+": "+peerID+": BITFIELD_MESSAGE :["+peer2PeerMessage.getMessageNumber()+"]: ");
 		try {
 			chunkRequester.addMessage(peer2PeerMessage);
@@ -331,7 +331,7 @@ public class PeerHandler implements Runnable{
 			// when this is message is received we need to check whether handshake message from the same peer has received already
 			
 			if(isHandshakeMessageReceived == true && isChunkRequestedStarted == false){
-				System.out.println(LOGGER_PREFIX+": "+peerID+": Starting Chunk Requested in BitField handler" );
+//				System.out.println(LOGGER_PREFIX+": "+peerID+": Starting Chunk Requested in BitField handler" );
 				new Thread(chunkRequester).start();
 				startMeasuringDownloadTime();
 
@@ -352,10 +352,11 @@ public class PeerHandler implements Runnable{
 	 */
 	synchronized private void handleHandshakeMessage(HandshakeMessage handshakeMessage){
 		System.out.println(LOGGER_PREFIX+": "+peerID+": HANDSHAKE_MESSAGE :["+handshakeMessage.getMessageNumber()+"]: ");
-		isHandshakeMessageReceived = true;
 		sendBitFieldMessage();
+		
+		isHandshakeMessageReceived = true;		
 		if(isHandshakeMessageReceived == true && isChunkRequestedStarted == false){
-			System.out.println(LOGGER_PREFIX+": "+peerID+": Starting Chunk Requested HandShakeMessage handler" );			
+//			System.out.println(LOGGER_PREFIX+": "+peerID+": Starting Chunk Requested HandShakeMessage handler" );			
 			new Thread(chunkRequester).start();
 			startMeasuringDownloadTime();
 			// to avoid creation of multiple chunk requested threads.
@@ -376,7 +377,7 @@ public class PeerHandler implements Runnable{
 			if(pieceMessage != null){
 				try {
 					Thread.sleep(2000);
-					System.out.println(LOGGER_PREFIX+": "+peerID+": Sending PIECE: "+ pieceMessage.getPieceIndex() );
+//					System.out.println(LOGGER_PREFIX+": "+peerID+": Sending PIECE: "+ pieceMessage.getPieceIndex() );
 					peerMessageSender.sendMessage(pieceMessage);
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
@@ -392,7 +393,7 @@ public class PeerHandler implements Runnable{
 	 * @param message the message
 	 */
 	synchronized private void handleHaveMessage(Peer2PeerMessage haveMessage){
-		System.out.println(LOGGER_PREFIX+": "+peerID+": HAVE_MESSAGE ["+haveMessage.getMessageNumber()+"]: for PIECE: "+ haveMessage.getPieceIndex() );
+//		System.out.println(LOGGER_PREFIX+": "+peerID+": HAVE_MESSAGE ["+haveMessage.getMessageNumber()+"]: for PIECE: "+ haveMessage.getPieceIndex() );
 		try {
 			chunkRequester.addMessage(haveMessage);
 		} catch (InterruptedException e) {
@@ -443,9 +444,12 @@ public class PeerHandler implements Runnable{
 	public synchronized boolean sendBitFieldMessage(){
 		try {
 			
+			
 			Peer2PeerMessage message = controller.getBitFieldMessage();
 			
 			peerMessageSender.sendMessage(message);
+
+			Thread.sleep(4000);
 			
 			return true;
 		} catch (Exception e) {
@@ -456,7 +460,7 @@ public class PeerHandler implements Runnable{
 		return false;
 	}
 	
-	public boolean exchangeHandshakeAndBitFieldMessages(){
+	public synchronized boolean exchangeHandshakeAndBitFieldMessages(){
 		try {
 			System.out.println(LOGGER_PREFIX+": "+peerID+" : waiting for handshake message in exchangeHandshakeAndBitFieldMessages");
 			HandshakeMessage message = (HandshakeMessage)neighborPeerInputStream.readObject();
@@ -479,7 +483,7 @@ public class PeerHandler implements Runnable{
 	}
 	
 
-	public void sendInterestedMessage(Peer2PeerMessage interestedMessage){
+	synchronized public void sendInterestedMessage(Peer2PeerMessage interestedMessage){
 		try {
 			if(isThisPeerChokedByNeighborPeer == false){
 				peerMessageSender.sendMessage(interestedMessage);
@@ -490,7 +494,7 @@ public class PeerHandler implements Runnable{
 		}
 	}
 	
-	public void sendNotInterestedMessage(Peer2PeerMessage notInterestedMessage){
+	synchronized public void sendNotInterestedMessage(Peer2PeerMessage notInterestedMessage){
 
 		try {
 			peerMessageSender.sendMessage(notInterestedMessage);
@@ -501,7 +505,7 @@ public class PeerHandler implements Runnable{
 		}
 	}
 	
-	public void sendRequestMessage(Peer2PeerMessage requestMessage){
+	synchronized public void sendRequestMessage(Peer2PeerMessage requestMessage){
 		try {
 			if(isThisPeerChokedByNeighborPeer == false){
 				peerMessageSender.sendMessage(requestMessage);
@@ -512,7 +516,8 @@ public class PeerHandler implements Runnable{
 		}
 	}
 	
-	public void sendChokeMessage(Peer2PeerMessage chokeMessage) {		
+	synchronized public void sendChokeMessage(Peer2PeerMessage chokeMessage) {		
+//		System.out.println(LOGGER_PREFIX+" sending CHOKE_MESSAGE to "+peerID);
 		try {
 			if(isChoked == false)
 			{
@@ -522,7 +527,7 @@ public class PeerHandler implements Runnable{
 			}
 			else
 			{
-				System.out.println(LOGGER_PREFIX+" Already CHOKED tha..Firse kyu choke kar rahe ho???");
+//				System.out.println(LOGGER_PREFIX+" Already CHOKED ");
 			}
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
@@ -530,8 +535,9 @@ public class PeerHandler implements Runnable{
 		}
 	}
 	
-	public void sendUnchokeMessage(Peer2PeerMessage unchokeMessage)
+	synchronized public void sendUnchokeMessage(Peer2PeerMessage unchokeMessage)
 	{
+//		System.out.println(LOGGER_PREFIX+" sending UNCHOKE_MESSAGE to "+peerID);
 		try {
 			if(isChoked == true)
 			{
@@ -541,7 +547,7 @@ public class PeerHandler implements Runnable{
 			}
 			else
 			{
-				System.out.println(LOGGER_PREFIX+" Already UNCHOKED tha..Firse kyu unchoke kar rahe ho???");
+//				System.out.println(LOGGER_PREFIX+" Already UNCHOKED");
 			}
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
@@ -549,7 +555,7 @@ public class PeerHandler implements Runnable{
 		}
 	}
 	
-	public void handleUnchokeMessage(Peer2PeerMessage unchokeMessage){
+	synchronized public void handleUnchokeMessage(Peer2PeerMessage unchokeMessage){
 		try {
 			peerMessageSender.sendMessage(unchokeMessage);
 		} catch (InterruptedException e) {
@@ -559,12 +565,12 @@ public class PeerHandler implements Runnable{
 	}
 	
 
-	public void setPeerID(String peerID) {
+	synchronized public void setPeerID(String peerID) {
 		this.peerID = peerID;
 		
 	}
 
-	public void sendHaveMessage(Peer2PeerMessage haveMessage) {
+	synchronized public void sendHaveMessage(Peer2PeerMessage haveMessage) {
 		try {
 			peerMessageSender.sendMessage(haveMessage);
 		} catch (InterruptedException e) {
@@ -595,4 +601,13 @@ public class PeerHandler implements Runnable{
 			return 0;
 		} 
 	}
+	
+	public boolean isHandshakeMessageReceived() {
+		return isHandshakeMessageReceived;
+	}
+
+	public void setHandshakeMessageReceived(boolean isHandshakeMessageReceived) {
+		this.isHandshakeMessageReceived = isHandshakeMessageReceived;
+	}
+
 }

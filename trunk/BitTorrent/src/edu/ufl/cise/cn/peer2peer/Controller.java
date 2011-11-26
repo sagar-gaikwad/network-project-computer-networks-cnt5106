@@ -23,6 +23,7 @@ import edu.ufl.cise.cn.peer2peer.utility.LogFactory;
 import edu.ufl.cise.cn.peer2peer.utility.MessageLogger;
 import edu.ufl.cise.cn.peer2peer.utility.PeerConfigFileReader;
 import edu.ufl.cise.cn.peer2peer.utility.PeerInfo;
+import edu.ufl.cise.cn.peer2peer.utility.PropsReader;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -57,6 +58,12 @@ public class Controller {
 	/** The peer id. */
 	private String peerID;
 	
+	private ArrayList<String> chokedPeerList = new ArrayList<String>();
+	
+	private ChokeUnchokeManager chokeUnchokeManager = null;
+	
+	private OptimisticUnchokeManager optimisticUnchokeManager = null;
+	
 	/**
 	 * Gets the single instance of Controller.
 	 *
@@ -86,6 +93,14 @@ public class Controller {
 		System.out.println(LOGGER_PREFIX+": Server process started.");
 		System.out.println(LOGGER_PREFIX+": Connecting to client mentioned above the list.");
 		connectToPreviousPeerneighbors();
+		
+		chokeUnchokeManager = ChokeUnchokeManager.getInstance(this);			
+		int chokeUnchokeInterval = Integer.parseInt(PropsReader.getPropertyValue(Constants.CHOKE_UNCHOKE_INTERVAL));
+		chokeUnchokeManager.start(0,chokeUnchokeInterval);
+		
+		optimisticUnchokeManager = OptimisticUnchokeManager.getInstance(this);
+		int optimisticUnchokeInterval = Integer.parseInt(PropsReader.getPropertyValue(Constants.OPTIMISTIC_UNCHOKE_INTERVAL));
+		optimisticUnchokeManager.start(0,optimisticUnchokeInterval);
 	}
 	
 	/**
@@ -238,6 +253,9 @@ public class Controller {
 		Peer2PeerMessage message = Peer2PeerMessage.getInstance(); 
 		
 		message.setHandler(pieceManager.getBitFieldHandler());
+		if(message.getHandler() == null){
+			System.out.println(LOGGER_PREFIX+" BITFIELD HANDLER NULL.");
+		}
 		message.setMessgageType(Constants.BITFIELD_MESSAGE);
 		
 
@@ -246,45 +264,78 @@ public class Controller {
 	
 	public HashMap<String,Double> getSpeedForAllPeers(){
 
-		//------------ Test code
-		HashMap<String, Double> peerSpeeds = new HashMap();
+/*		HashMap<String, Double> peerSpeeds = new HashMap();
 		peerSpeeds.put("1010", 100.98d);
 		peerSpeeds.put("1014", 120.9d);
 		peerSpeeds.put("1015", 98.2d);
 		peerSpeeds.put("1016", 78.3d);
 		peerSpeeds.put("1017", 108.4d);
 		peerSpeeds.put("1019", 101.7d);			
-		//System.out.println("Ghanta...tumhare pappa ne bhi li thi speed measure kabhi??");		
-		return peerSpeeds;
-		//------------ Test code ends
-		//return null;
+		return peerSpeeds;*/
+		
+		HashMap<String, Double> peerSpeedList = new HashMap<String, Double>();
+		
+		for (PeerHandler peerHandler : neighborPeerHandlerList) {
+			peerSpeedList.put(peerHandler.getPeerId(), peerHandler.getDownloadSpeed());
+		}
+		return peerSpeedList;
 	}
 	
 	public void chokePeers(ArrayList<String> peerList){
-		System.out.println("Sagar beta...choke karo");
+		chokedPeerList = peerList;
+		Peer2PeerMessage chokeMessage = Peer2PeerMessage.getInstance();
+		chokeMessage.setMessgageType(Constants.CHOKE_MESSAGE);
+		
+//		System.out.println(LOGGER_PREFIX+" : Sending CHOKE message to peers...");
+		
+		for (String peerToBeChoked : peerList) {
+			for (PeerHandler peerHandler : neighborPeerHandlerList) {
+				if(peerHandler.getPeerId().equals(peerToBeChoked)){
+					if(peerHandler.isHandshakeMessageReceived() == true){
+//						System.out.println(LOGGER_PREFIX+" : Sending CHOKE message to peers : "+peerToBeChoked);
+						peerHandler.sendChokeMessage(chokeMessage);
+					}
+					break;
+				}
+			}
+		}
 	}
 	
 	public void unChokePeers(ArrayList<String> peerList){
-		System.out.println("Sagar beta...unchoke karo");
+		Peer2PeerMessage unChokeMessage = Peer2PeerMessage.getInstance();
+		unChokeMessage.setMessgageType(Constants.UNCHOKE_MESSAGE);
+//		System.out.println(LOGGER_PREFIX+" : Sending UNCHOKE message to peers...");
+		for (String peerToBeUnChoked : peerList) {
+			for (PeerHandler peerHandler : neighborPeerHandlerList) {
+				if(peerHandler.getPeerId().equals(peerToBeUnChoked)){
+					if(peerHandler.isHandshakeMessageReceived() == true){
+//						System.out.println(LOGGER_PREFIX+" : Sending UNCHOKE message to peers..."+peerToBeUnChoked);
+						peerHandler.sendUnchokeMessage(unChokeMessage);
+					}
+					break;
+				}
+			}
+		}
 	}
 	
-	public void optimisticallyUnChokePeers(String peer){
-		System.out.println("Sagar beta...optimistically choke karo :P");
+	public void optimisticallyUnChokePeers(String peerToBeUnChoked){
+		Peer2PeerMessage unChokeMessage = Peer2PeerMessage.getInstance();
+		unChokeMessage.setMessgageType(Constants.UNCHOKE_MESSAGE);	
+
+		System.out.println(LOGGER_PREFIX+": Sending OPTIMISTIC UNCHOKE message to "+peerToBeUnChoked);
+		
+		for (PeerHandler peerHandler : neighborPeerHandlerList) {
+			if(peerHandler.getPeerId().equals(peerToBeUnChoked)){
+				if(peerHandler.isHandshakeMessageReceived() == true){
+					peerHandler.sendUnchokeMessage(unChokeMessage);
+				}				
+				break;
+			}
+		}
 	}
 	
 	public ArrayList<String> getChokedPeerList(){
-
-		//----------Test code
-		ArrayList<String> chokedPeers = new ArrayList();
-		chokedPeers.add("1002");
-		chokedPeers.add("3002");
-		chokedPeers.add("4002");
-		chokedPeers.add("5002");
-		chokedPeers.add("6002");
-		chokedPeers.add("7002");
-		return chokedPeers;
-		//---Test code ends
-		//return null;
+		return chokedPeerList;
 	}
 	
 	public void insertPiece(Peer2PeerMessage pieceMessage){

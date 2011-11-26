@@ -18,6 +18,10 @@ public class OptimisticUnchokeManager implements Runnable{
     
     private Controller controller = null;
     
+    private OptimisticUnchokeManager(){
+		
+	}
+    
     public static synchronized OptimisticUnchokeManager getInstance(Controller controller){
     	if(optimisticUnchokeManager == null){
     		if(controller == null){
@@ -54,9 +58,10 @@ public class OptimisticUnchokeManager implements Runnable{
 	public void run() {
 		// TODO Auto-generated method stub
 		ArrayList<String> chokedPeerList = controller.getChokedPeerList();
-		Integer random = ((int)(Math.random()*1000))%chokedPeerList.size();
-		System.out.println("OptimisticUnchokeManager : random peer to unchoke is "+chokedPeerList.get(random));
-		controller.optimisticallyUnChokePeers(chokedPeerList.get(random));	
+		if(chokedPeerList.size() > 0){
+			Random random = new Random();
+			controller.optimisticallyUnChokePeers(chokedPeerList.get(random.nextInt(chokedPeerList.size())));
+		}		
 	}
 	
 	public void start(int startDelay, int intervalDelay){

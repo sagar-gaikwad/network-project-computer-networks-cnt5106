@@ -76,7 +76,7 @@ public class BitFieldHandler implements Serializable{
 	 * @param number the number
 	 * @param value the value
 	 */
-	public void setBitFieldOn(int number, boolean value)
+	synchronized public void setBitFieldOn(int number, boolean value)
 	{
 		bitfieldVector[number] = value;
 	}

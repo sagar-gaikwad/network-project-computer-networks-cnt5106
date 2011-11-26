@@ -8,6 +8,7 @@ import edu.ufl.cise.cn.peer2peer.Controller;
 import edu.ufl.cise.cn.peer2peer.entities.Peer2PeerMessage;
 import edu.ufl.cise.cn.peer2peer.filehandler.BitFieldHandler;
 import edu.ufl.cise.cn.peer2peer.utility.Constants;
+import edu.ufl.cise.cn.peer2peer.utility.PropsReader;
 
 public class ChunkRequester implements Runnable {
 	
@@ -58,6 +59,13 @@ public class ChunkRequester implements Runnable {
 	
 	private boolean init(){
 		messageQueue = new ArrayBlockingQueue<Peer2PeerMessage>(Constants.SENDER_QUEUE_SIZE);
+
+		int pieceSize = Integer.parseInt(PropsReader.getPropertyValue("PieceSize"));
+		int numOfPieces = (int) Math.ceil(Integer.parseInt(PropsReader.getPropertyValue("FileSize")) / (pieceSize*1.0)) ;
+	
+		neighborPeerBitFieldhandler = new BitFieldHandler(numOfPieces);
+		
+		
 		return true;
 	}
 	
@@ -102,6 +110,15 @@ public class ChunkRequester implements Runnable {
 				if(message.getType() == Constants.BITFIELD_MESSAGE){
 					
 					neighborPeerBitFieldhandler = message.getHandler();
+					
+					/*BitFieldHandler receivedBitFieldhandler = message.getHandler();
+					
+					for(int i=0 ; i<receivedBitFieldhandler.getLength() ; i++){
+						if(receivedBitFieldhandler.getBitFieldOn(i) == true){
+							neighborPeerBitFieldhandler.setBitFieldOn(i, true);
+						}
+					}*/
+					
 					int missingPieceIndex = getPieceNumberToBeRequested();
 					
 					if(missingPieceIndex == -1){
@@ -119,7 +136,13 @@ public class ChunkRequester implements Runnable {
 				
 				if(message.getType() == Constants.HAVE_MESSAGE){
 					int pieceIndex = message.getPieceIndex();
-					neighborPeerBitFieldhandler.setBitFieldOn(pieceIndex, true);
+					
+					try {
+						neighborPeerBitFieldhandler.setBitFieldOn(pieceIndex, true);
+					} catch (Exception e) {
+						System.out.println(LOGGER_PREFIX+"["+peerHandler.getPeerId()+"]: NULL POINTER EXCEPTION for piece Index"+pieceIndex +" ... "+neighborPeerBitFieldhandler);
+						e.printStackTrace();
+					}
 					
 					int missingPieceIndex = getPieceNumberToBeRequested();
 

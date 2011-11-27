@@ -54,13 +54,13 @@ public class PeerMessageSender implements Runnable {
 	}
 	
 	public void printMessageDetails(PeerMessage message){
-		if(message.getType() != Constants.HANDSHAKE_MESSAGE && message.getType() != Constants.HAVE_MESSAGE && message.getType() != Constants.NOT_INTERESTED_MESSAGE && message.getType() != Constants.INTERESTED_MESSAGE){
-			if(message.getType() != Constants.PIECE_MESSAGE || message.getType() != Constants.REQUEST_MESSAGE){
+		if(message.getType() != Constants.HAVE_MESSAGE && message.getType() != Constants.NOT_INTERESTED_MESSAGE && message.getType() != Constants.INTERESTED_MESSAGE){
+			if(message.getType() == Constants.PIECE_MESSAGE || message.getType() == Constants.REQUEST_MESSAGE){
 //				System.out.println(LOGGER_PREFIX+": Sent message:["+message.getMessageNumber()+"]:"+Constants.getMessageName(message.getType()) +" Piece Number : "+((Peer2PeerMessage)message).getPieceIndex());
-				System.out.println(LOGGER_PREFIX+":["+handler.getPeerId()+"]"+": Sent message:["+message.getMessageNumber()+"]:"+Constants.getMessageName(message.getType()) +" Piece Number : "+((Peer2PeerMessage)message).getPieceIndex());
+//				System.out.println(LOGGER_PREFIX+":["+handler.getPeerId()+"]"+": Sent message:["+message.getMessageNumber()+"]:"+Constants.getMessageName(message.getType()) +" Piece Number : "+((Peer2PeerMessage)message).getPieceIndex());
 			}else{
 //				System.out.println(LOGGER_PREFIX+": Sent message:["+message.getMessageNumber()+"]:"+Constants.getMessageName(message.getType()) );
-				System.out.println(LOGGER_PREFIX+":["+handler.getPeerId()+"]"+": Sent message:["+message.getMessageNumber()+"]:"+Constants.getMessageName(message.getType()));
+//				System.out.println(LOGGER_PREFIX+":["+handler.getPeerId()+"]"+": Sent message:["+message.getMessageNumber()+"]:"+Constants.getMessageName(message.getType()));
 			}			
 		}		
 	}

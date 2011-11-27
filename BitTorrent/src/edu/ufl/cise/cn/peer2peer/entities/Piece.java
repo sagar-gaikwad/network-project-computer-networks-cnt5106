@@ -16,10 +16,7 @@ public class Piece implements Serializable{
 	}
 
 	public void setData(byte[] data) {
-		if(this.size == data.length)
-			this.data = data;
-		else
-			System.err.println("Piece Size and Data Size MisMatch");
+		this.data = data;
 	}
 	
 	public int getSize(){

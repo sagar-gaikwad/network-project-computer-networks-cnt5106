@@ -5,6 +5,7 @@ import java.io.FileOutputStream;
 import java.io.RandomAccessFile;
 
 import edu.ufl.cise.cn.peer2peer.entities.Piece;
+import edu.ufl.cise.cn.peer2peer.utility.Constants;
 import edu.ufl.cise.cn.peer2peer.utility.PropsReader;
 
 // TODO: Auto-generated Javadoc
@@ -104,7 +105,7 @@ public class PieceManager {
 				System.out.println("PieceManager : outputfile "+outputFileName+" already exists");
 			}*/
 			outStream = new RandomAccessFile(outputFileName,"rw");
-			outStream.setLength(pieceSize*numOfPieces);
+			outStream.setLength(Integer.parseInt(PropsReader.getPropertyValue(Constants.FILE_SIZE)));
 			
 			System.out.println("Output stream opened");
 			//inStream = new FileInputStream(outputFileName);
@@ -155,10 +156,18 @@ public class PieceManager {
 			try{
 				byte[] readBytes = new byte[pieceSize];
 				outStream.seek(number*pieceSize);
-				outStream.read(readBytes);
-				//inStream.read(readBytes, number*pieceSize, pieceSize);
-				readPiece.setData(readBytes);
-			//	inStream.close();
+				int dataSize = outStream.read(readBytes);
+				
+				if(dataSize != pieceSize){
+					byte[] newReadBytes = new byte[dataSize];
+					for(int i=0 ; i<dataSize ; i++){
+						newReadBytes[i] = readBytes[i];
+					}
+					readPiece.setData(newReadBytes);
+				}else{
+					readPiece.setData(readBytes);
+				}
+				
 				return readPiece;
 			}
 			catch (Exception e) {

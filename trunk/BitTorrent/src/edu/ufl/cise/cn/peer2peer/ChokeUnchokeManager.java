@@ -1,12 +1,10 @@
 package edu.ufl.cise.cn.peer2peer;
 
-import edu.ufl.cise.cn.peer2peer.utility.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Set;
 import java.util.Map.Entry;
-import java.util.TreeMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
@@ -55,7 +53,7 @@ public class ChokeUnchokeManager implements Runnable {
 	}
 
 	private boolean init() {
-		scheduler = Executors.newScheduledThreadPool(5);
+		scheduler = Executors.newScheduledThreadPool(1);
 		System.out.println("scheduler: "+scheduler);
 		return true;
 	}
@@ -117,10 +115,12 @@ public class ChokeUnchokeManager implements Runnable {
 			// To make valuecomparator object working.
 			LinkedHashMap<String, Double> sortedSpeedMap = new LinkedHashMap<String, Double>();
 
+			System.out.print(LOGGER_PREFIX+" Peer Speed : ");
 			for (int i = 0; i < tempArr.length; i++) {
 				sortedSpeedMap.put(tempArr[i].getKey(), tempArr[i].getValue());
 				System.out.print(tempArr[i].getKey() + ":["+tempArr[i].getValue()+"] "+" , " );
 			}
+			System.out.println(" ");
 
 			int count = 0;
 
@@ -141,7 +141,7 @@ public class ChokeUnchokeManager implements Runnable {
 			}			
 			chokedPeerList.addAll(sortedSpeedMap.keySet());
 
-			System.out.print(LOGGER_PREFIX+": Choking these peers: ");
+			System.out.print(LOGGER_PREFIX+":   Choking these peers: ");
 			
 			for (String peerID : chokedPeerList) {
 				System.out.print(peerID +" , " );

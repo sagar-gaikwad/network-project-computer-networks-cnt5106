@@ -111,7 +111,7 @@ public class PeerServer implements Runnable{
 				//create and initialize peer handler class. 
 				PeerHandler neighborPeerHandler = PeerHandler.getInstance(	neighborPeerSocket, controller);
 				
-				neighborPeerHandler.exchangeHandshakeAndBitFieldMessages();
+//				neighborPeerHandler.exchangeHandshakeAndBitFieldMessages();
 				
 				// keep track of encountered peer by registering it to controller
 				controller.registerPeer(neighborPeerHandler);

@@ -72,6 +72,8 @@ public class Constants {
 	
 	public static final String OPTIMISTIC_UNCHOKE_INTERVAL = "OptimisticUnchokingInterval";
 	
+	public static final String FILE_SIZE = "FileSize";
+	
 	public static String getMessageName(int i){
 		if(i == Constants.BITFIELD_MESSAGE){
 			return "BITFIELD_MESSAGE";

@@ -59,6 +59,7 @@ public class ChokeUnchokeManager implements Runnable {
 	}
 
 	public void deinit() {
+		System.out.println(LOGGER_PREFIX+" Shutting down ChokeUnchokeManager......");
 		task.cancel(true);
 	}
 
@@ -89,7 +90,7 @@ public class ChokeUnchokeManager implements Runnable {
 		if (preferredNeighbors > speedMap.size()) {
 
 			System.err
-					.println("ChokeUnchokeManager : Number of preferred neighbors is less than total peers. Might be problem. ");
+					.println("ChokeUnchokeManager : Number of preferred neighbors is more than total peers. Might be problem. ");
 
 		} else {
 			ArrayList<String> unchokePeers = new ArrayList<String>();

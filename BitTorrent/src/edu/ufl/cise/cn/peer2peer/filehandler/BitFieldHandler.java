@@ -100,4 +100,31 @@ public class BitFieldHandler implements Serializable{
 			bitfieldVector[i] = true;
 		}
 	}
+	
+	/**
+	 * Checks if file download is complete or not.
+	 *
+	 * @return true, if is file download complete
+	 */
+	public boolean isFileDownloadComplete(){
+		//to traverse whole bitfield vector for value 1
+		
+		if(bitfieldVector==null || bitfieldVector.length==0){
+			return false;
+		}
+		
+		int i = 0;
+		while(i < this.getLength())
+		{
+			if(bitfieldVector[i]!=true)
+			{
+				return false;
+			}
+			else
+			{
+				i++;
+			}
+		}
+		return true;
+	}
 }

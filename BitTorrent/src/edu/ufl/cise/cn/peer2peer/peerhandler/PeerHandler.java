@@ -220,6 +220,12 @@ public class PeerHandler implements Runnable{
 				}else if(message.getType() == Constants.UNCHOKE_MESSAGE){
 					Peer2PeerMessage peer2PeerMessage = (Peer2PeerMessage)message;
 					handleUnchockMessage(peer2PeerMessage);
+				}else if(message.getType() == Constants.SHUTDOWN_MESSAGE){
+					Peer2PeerMessage peer2peerMessage = (Peer2PeerMessage)message;
+					handleShutdownMessage(peer2peerMessage);
+				}else if(message.getType() == Constants.SHUTDOWN_DONE_MESSAGE){
+					Peer2PeerMessage peer2peerMessage = (Peer2PeerMessage)message;
+					handleShutdownDone(peer2peerMessage);
 				}
 			}
 		} catch (IOException e) {
@@ -344,13 +350,13 @@ public class PeerHandler implements Runnable{
 			// we need to start chunk request message only after complete handshake for both sides
 			// when this is message is received we need to check whether handshake message from the same peer has received already
 			
-			if(isHandshakeMessageReceived == true && isHandShakeMessageSent == true && isChunkRequestedStarted == false){
+			if(isHandshakeMessageReceived == true && isHandShakeMessageSent == true && isChunkRequestedStarted() == false){
 //				System.out.println(LOGGER_PREFIX+": "+peerID+": Starting Chunk Requested in BitField handler" );
 				new Thread(chunkRequester).start();
 				startMeasuringDownloadTime();
 
 				// to avoid creation of multiple chunk requested threads.
-				isChunkRequestedStarted = true;
+				setChunkRequestedStarted(true) ;
 			}
 			
 		} catch (InterruptedException e) {
@@ -376,12 +382,12 @@ public class PeerHandler implements Runnable{
 		
 		isHandshakeMessageReceived = true;		
 		
-		if(isHandshakeMessageReceived == true && isHandShakeMessageSent == true && isChunkRequestedStarted == false){
+		if(isHandshakeMessageReceived == true && isHandShakeMessageSent == true && isChunkRequestedStarted() == false){
 //			System.out.println(LOGGER_PREFIX+": "+peerID+": Starting Chunk Requested HandShakeMessage handler" );			
 			new Thread(chunkRequester).start();
 			startMeasuringDownloadTime();
 			// to avoid creation of multiple chunk requested threads.
-			isChunkRequestedStarted = true;
+			setChunkRequestedStarted(true);
 		}
 	}
 	
@@ -492,6 +498,14 @@ public class PeerHandler implements Runnable{
 		}
 	}
 	
+	public boolean isDownloadComplete()
+	{
+		if(isChunkRequestedStarted() == true){
+			return chunkRequester.isNeighborPeerDownloadedFile();
+		}else{
+			return false;
+		}
+	}
 	public void sendNotInterestedMessage(Peer2PeerMessage notInterestedMessage){
 
 		try {
@@ -570,6 +584,50 @@ public class PeerHandler implements Runnable{
 			e.printStackTrace();
 		}
 	}
+	
+	public void sendShutdownMessage(Peer2PeerMessage shutdownMessage)
+	{
+		//Mohit
+		try {
+			peerMessageSender.sendMessage(shutdownMessage);
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}
+	}
+	public void handleShutdownDone(Peer2PeerMessage message)
+	{
+		//Mohit
+		peerMessageSender.shutdown();
+		chunkRequester.shutdown();
+		controller.shutdown();
+	}
+	
+	public void handleShutdownMessage(Peer2PeerMessage message)
+	{
+		//MOHIT
+		try {
+			Peer2PeerMessage doneShutdownMessage =Peer2PeerMessage.getInstance();
+			doneShutdownMessage.setMessgageType(Constants.SHUTDOWN_DONE_MESSAGE);			
+			peerMessageSender.sendMessage(doneShutdownMessage);
+			
+			controller.BroadcastShutdownMessage();
+			peerMessageSender.shutdown();
+			chunkRequester.shutdown();
+			controller.shutdown();
+			
+			//sendShutDo
+			//Peer2PeerMessage shutdownMessage = Peer2PeerMessage.getInstance();
+			//shutdownMessage.setMessgageType(Constants.SHUTDOWN_MESSAGE);
+						
+			
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+				
+		
+	}
 
 	private void setChoke(boolean message)
 	{
@@ -622,4 +680,16 @@ public class PeerHandler implements Runnable{
 		this.isHandshakeMessageReceived = isHandshakeMessageReceived;
 	}
 
+
+	public synchronized boolean isChunkRequestedStarted() {
+		return isChunkRequestedStarted;
+	}
+
+
+	public synchronized void setChunkRequestedStarted(boolean isChunkRequestedStarted) {
+		this.isChunkRequestedStarted = isChunkRequestedStarted;
+	}
+
+	
+	
 }

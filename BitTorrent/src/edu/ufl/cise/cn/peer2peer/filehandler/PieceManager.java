@@ -282,20 +282,7 @@ public class PieceManager {
 	 * @return true, if is file download complete
 	 */
 	synchronized public boolean isFileDownloadComplete(){
-		//to traverse whole bitfield vector for value 1
-		int i = 0;
-		while(i < bitField.getLength())
-		{
-			if(bitField.getBitFieldOn(i)!=true)
-			{
-				return false;
-			}
-			else
-			{
-				i++;
-			}
-		}
-		return true;
+		return bitField.isFileDownloadComplete();
 	}
 	
 	public BitFieldHandler getBitFieldHandler(){

@@ -21,7 +21,7 @@ public class ChunkRequester implements Runnable {
 	private Controller controller;
 	private PeerHandler peerHandler;
 	
-	BitFieldHandler neighborPeerBitFieldhandler = null;
+	private BitFieldHandler neighborPeerBitFieldhandler = null;
 	
 	private ChunkRequester(){
 		
@@ -224,7 +224,17 @@ public class ChunkRequester implements Runnable {
 	}
 	
 	public void shutdown(){
+		System.out.println(LOGGER_PREFIX+" Shutting down ChunkRequester......");
 		isShutDown = true;
+	}
+	
+	
+	public boolean isNeighborPeerDownloadedFile(){
+		if(neighborPeerBitFieldhandler != null && neighborPeerBitFieldhandler.isFileDownloadComplete() == true){
+			return true;
+		}else{
+			return false;
+		}
 	}
 	
 }

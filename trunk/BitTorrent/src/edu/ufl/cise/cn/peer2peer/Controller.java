@@ -17,6 +17,7 @@ import edu.ufl.cise.cn.peer2peer.entities.PeerMessage;
 import edu.ufl.cise.cn.peer2peer.entities.Piece;
 import edu.ufl.cise.cn.peer2peer.filehandler.PieceManager;
 import edu.ufl.cise.cn.peer2peer.messagehandler.MessageManager;
+import edu.ufl.cise.cn.peer2peer.peerhandler.ChunkRequester;
 import edu.ufl.cise.cn.peer2peer.peerhandler.PeerHandler;
 import edu.ufl.cise.cn.peer2peer.utility.Constants;
 import edu.ufl.cise.cn.peer2peer.utility.LogFactory;
@@ -45,11 +46,15 @@ public class Controller {
 	/** The message manager. */
 	private MessageManager messageManager = null;
 	
+	private boolean allPeersDownloadComplete = false;
+	
 	/** The piece manager. */
 	private PieceManager pieceManager = null;
 	
 	/** The peer configuration reader. */
 	private PeerConfigFileReader peerConfigurationReader = null;
+	
+	private boolean isAllPeersConnection = false; 
 	
 	public String getPeerID() {
 		return peerID;
@@ -63,6 +68,8 @@ public class Controller {
 	private ChokeUnchokeManager chokeUnchokeManager = null;
 	
 	private OptimisticUnchokeManager optimisticUnchokeManager = null;
+	
+	private PeerServer peerServer;
 	
 	/**
 	 * Gets the single instance of Controller.
@@ -109,7 +116,6 @@ public class Controller {
 	 * @param peerID the peer id
 	 */
 	private void startServerThread(String peerID){
-		PeerServer peerServer = PeerServer.getInstance(peerID, this);
 		new Thread(peerServer).start();
 	}
 	
@@ -131,6 +137,7 @@ public class Controller {
 				makeConnectionToneighborPeer(neighborPeerMap.get(neighborPeerID));
 			}
 		}
+		setAllPeersConnection(true);
 	}
 	
 	/**
@@ -207,6 +214,8 @@ public class Controller {
 			return false;
 		}
 		
+		peerServer = PeerServer.getInstance(peerID, this);
+		
 		return true;
 	}
 	
@@ -215,6 +224,46 @@ public class Controller {
 	 */
 	public void close(){
 		
+	}
+	
+	/*public boolean getAllPeerDownloadCompleteFlag()
+	{
+		return allPeersDownloadComplete;
+	}*/
+	
+	public boolean isAllPeersFileDownloadComplete()
+	{
+		
+		if(isAllPeersConnection() == false || peerServer.isPeerServerCompleted() == false){
+				
+			return false;
+		}
+		
+		int i = 0;
+		PeerHandler peer;
+
+		System.out.println(LOGGER_PREFIX+": Number of neighbours "+neighborPeerHandlerList.size());
+		while(i < neighborPeerHandlerList.size())
+		{
+			peer = neighborPeerHandlerList.get(i);
+			if(peer.isDownloadComplete() == true)
+			{
+				i++;
+			}
+			else
+			{
+				return false;
+			}
+		}
+		
+		allPeersDownloadComplete = true;
+		return true;
+	}
+	
+	public void shutdown()
+	{
+		chokeUnchokeManager.deinit();
+		optimisticUnchokeManager.deinit();
 	}
 	
 	/**
@@ -375,6 +424,19 @@ public class Controller {
 			}
 		}
 	}
+	
+	public void BroadcastShutdownMessage()
+	{
+		Peer2PeerMessage shutdownMessage = Peer2PeerMessage.getInstance();
+		
+		shutdownMessage.setMessgageType(Constants.SHUTDOWN_MESSAGE);
+		
+		for (PeerHandler peerHandler : neighborPeerHandlerList) {
+//			System.out.println(LOGGER_PREFIX+": Sending have message from "+peerID+ " to : "+peerHandler.getPeerId());			
+				peerHandler.sendShutdownMessage(shutdownMessage);
+			
+		}
+	}
 
 	public int getNumberOfPeersSupposedToBeConnected() {
 		HashMap<String, PeerInfo> neighborPeerMap = peerConfigurationReader.getPeerInfoMap();
@@ -394,5 +456,13 @@ public class Controller {
 		}
 		
 		return numberOfPeersSupposedToBeEstablishingConnection;
+	}
+
+	public boolean isAllPeersConnection() {
+		return isAllPeersConnection;
+	}
+
+	public void setAllPeersConnection(boolean isAllPeersConnection) {
+		this.isAllPeersConnection = isAllPeersConnection;
 	}
 }

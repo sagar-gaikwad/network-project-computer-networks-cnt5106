@@ -40,6 +40,10 @@ public class Constants {
 	/** The Constant CHOKE_MESSAGE. */
 	public static final byte CHOKE_MESSAGE = 0;
 	
+	public static final byte SHUTDOWN_MESSAGE = 100;
+	
+	public static final byte SHUTDOWN_DONE_MESSAGE = 101;
+	
 	/** The Constant UNCHOKE_MESSAGE. */
 	public static final byte UNCHOKE_MESSAGE = 1;
 

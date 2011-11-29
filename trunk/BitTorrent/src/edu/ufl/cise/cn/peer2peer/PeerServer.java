@@ -35,6 +35,8 @@ public class PeerServer implements Runnable{
 	/** The controller. */
 	private Controller controller;
 	
+	private boolean isPeerServerCompleted = false;
+	
 	/**
 	 * Gets the single instance of PeerServer.
 	 *
@@ -120,6 +122,8 @@ public class PeerServer implements Runnable{
 				new Thread(neighborPeerHandler).start();
 			}					
 			
+			setPeerServerCompleted(true);
+			
 			System.out.println(LOGGER_PREFIX+": Exiting PeerServier");
 			
 		} catch (IOException e) {
@@ -127,4 +131,14 @@ public class PeerServer implements Runnable{
 			e.printStackTrace();
 		}   
 	}
+
+	public synchronized boolean isPeerServerCompleted() {
+		return isPeerServerCompleted;
+	}
+
+	public synchronized void setPeerServerCompleted(boolean isPeerServerCompleted) {
+		this.isPeerServerCompleted = isPeerServerCompleted;
+	}
+	
+	
 }

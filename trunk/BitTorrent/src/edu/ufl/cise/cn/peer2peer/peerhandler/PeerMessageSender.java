@@ -97,6 +97,7 @@ public class PeerMessageSender implements Runnable {
 	}
 	
 	public void shutdown(){
+		System.out.println(LOGGER_PREFIX+" Shutting down PeerMessageSender");
 		isShutDown = true;
 	}
 }

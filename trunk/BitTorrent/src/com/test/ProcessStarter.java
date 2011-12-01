@@ -41,9 +41,6 @@ public class ProcessStarter {
 			String runCommand = "java EntryPoint";
 			
 			String commandLineArgument = peerInfo.getPeerID();
-			commandLineArgument += " " + peerInfo.getHostAddress();
-			commandLineArgument += " " + peerInfo.getPortNumber();
-			commandLineArgument += " " + peerInfo.isFileExists();
 			
 			Process serverProcess = Runtime.getRuntime().exec("ssh " + peerInfo.getHostAddress() + " cd " + path + " ;" +runCommand+" "+commandLineArgument);
 			

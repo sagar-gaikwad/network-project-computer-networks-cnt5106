@@ -8,15 +8,21 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
+import edu.ufl.cise.cn.peer2peer.utility.LogFactory;
+import edu.ufl.cise.cn.peer2peer.utility.MessageLogger;
+
 public class OptimisticUnchokeManager implements Runnable{
 	
 	private ScheduledFuture<?> task = null;
+	
 	
     private ScheduledExecutorService scheduler = null;
 	
     private static OptimisticUnchokeManager optimisticUnchokeManager = null;
     
     private Controller controller = null;
+    
+    private MessageLogger logger = LogFactory.getLogger(null);
     
     private OptimisticUnchokeManager(){
 		
@@ -68,7 +74,8 @@ public class OptimisticUnchokeManager implements Runnable{
 		
 		if(controller.isFileDownloadComplete() == true)
     	{    		
-			System.out.println("File DOWNLOAD COMPLETE FOR PEER : "+controller.getPeerID());
+			//System.out.println("File DOWNLOAD COMPLETE FOR PEER : "+controller.getPeerID());
+			logger.info("Peer ["+controller.getPeerID()+"] has downloaded the complete file.");
     	}
 		
 		if(controller.isAllPeersFileDownloadComplete() == true)

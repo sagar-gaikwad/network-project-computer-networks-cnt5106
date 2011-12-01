@@ -15,6 +15,8 @@ import edu.ufl.cise.cn.peer2peer.entities.PeerMessage;
 import edu.ufl.cise.cn.peer2peer.filehandler.BitFieldHandler;
 import edu.ufl.cise.cn.peer2peer.messagehandler.MessageManager;
 import edu.ufl.cise.cn.peer2peer.utility.Constants;
+import edu.ufl.cise.cn.peer2peer.utility.LogFactory;
+import edu.ufl.cise.cn.peer2peer.utility.MessageLogger;
 
 /**
  * The Class PeerHandler.
@@ -65,6 +67,7 @@ public class PeerHandler implements Runnable{
 	
 	private int downloadDataSize = 0;
 	
+	private MessageLogger logger = LogFactory.getLogger(peerID);
 	/**
 	 * Instantiates a new peer handler.
 	 */
@@ -312,7 +315,9 @@ public class PeerHandler implements Runnable{
 	 */
 	private void handlePieceMessage(Peer2PeerMessage pieceMessage) {
 		
-		controller.insertPiece(pieceMessage);
+		
+		
+		controller.insertPiece(pieceMessage, peerID);
 		controller.sendHaveMessage(pieceMessage.getPieceIndex(),peerID);
 		
 		downloadDataSize += pieceMessage.getData().getSize();
@@ -334,6 +339,7 @@ public class PeerHandler implements Runnable{
 	 * @param peer2PeerMessage the peer2 peer message
 	 */
 	private void handleChokeMessage(Peer2PeerMessage peer2PeerMessage) {
+		logger.info("Peer ["+peerID+"] is choked by ["+controller.getPeerID()+"]");
 		isThisPeerChokedByNeighborPeer = true;		
 	}
 
@@ -420,7 +426,8 @@ public class PeerHandler implements Runnable{
 	 * @param message the message
 	 */
 	private void handleHaveMessage(Peer2PeerMessage haveMessage){
-//		System.out.println(LOGGER_PREFIX+": "+peerID+": HAVE_MESSAGE ["+haveMessage.getMessageNumber()+"]: for PIECE: "+ haveMessage.getPieceIndex() );
+		logger.info("Peer ["+controller.getPeerID()+"] recieved the 'have' message from ["+peerID+"] for the piece"+haveMessage.getPieceIndex());
+		//		System.out.println(LOGGER_PREFIX+": "+peerID+": HAVE_MESSAGE ["+haveMessage.getMessageNumber()+"]: for PIECE: "+ haveMessage.getPieceIndex() );
 		try {
 			chunkRequester.addMessage(haveMessage);
 		} catch (InterruptedException e) {
@@ -435,6 +442,7 @@ public class PeerHandler implements Runnable{
 	 * @param message the message
 	 */
 	private void handleInterestedMessage(Peer2PeerMessage interestedMessage){
+		logger.info("Peer ["+controller.getPeerID()+"] recieved the 'interested' message from ["+peerID+"]");
 //		System.out.println(LOGGER_PREFIX+": Received interested Message from "+peerID);
 	}
 	
@@ -444,6 +452,7 @@ public class PeerHandler implements Runnable{
 	 * @param message the message
 	 */
 	private void handleNotInterestedMessage(Peer2PeerMessage message){
+		logger.info("Peer ["+controller.getPeerID()+"] recieved the 'not interested' message from ["+peerID+"]");
 //		System.out.println(LOGGER_PREFIX+": Received not interested Message from "+peerID);
 	}
 	
@@ -569,6 +578,8 @@ public class PeerHandler implements Runnable{
 	
 	public void handleUnchokeMessage(Peer2PeerMessage unchokeMessage){
 		try {
+			//unchokeMessage.
+			logger.info("Peer ["+peerID+"] is unchoked by ["+controller.getPeerID()+"]");
 			peerMessageSender.sendMessage(unchokeMessage);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block

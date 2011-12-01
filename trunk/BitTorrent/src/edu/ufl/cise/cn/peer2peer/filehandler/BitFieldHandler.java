@@ -101,6 +101,14 @@ public class BitFieldHandler implements Serializable{
 		}
 	}
 	
+	public int getNoOfPieces(){
+		int counter = 0;
+		for(int i = 0; i < this.bitfieldVector.length; i++){
+			if(this.bitfieldVector[i]==true)
+				counter++;
+		}
+		return counter;
+	}
 	/**
 	 * Checks if file download is complete or not.
 	 *

@@ -36,7 +36,7 @@ public class Controller {
 	
 	public static String LOGGER_PREFIX = Controller.class.getSimpleName();
 	
-	MessageLogger logger = null;
+	
 	/** The controller. */
 	private static Controller controller = null;
 	
@@ -56,6 +56,7 @@ public class Controller {
 	
 	private boolean isAllPeersConnection = false; 
 	
+
 	public String getPeerID() {
 		return peerID;
 	}
@@ -71,6 +72,7 @@ public class Controller {
 	
 	private PeerServer peerServer;
 	
+	private MessageLogger logger = LogFactory.getLogger(peerID);	
 	/**
 	 * Gets the single instance of Controller.
 	 *
@@ -133,6 +135,7 @@ public class Controller {
 			System.out.println("Checking neighbor client : "+neighborPeerID);
 			// if peer ID is less than the ID of this peer then it ocured previously in file. 
 			if(Integer.parseInt(neighborPeerID) < Integer.parseInt(peerID)){
+				logger.info("Peer "+peerID+" makes a connection  to Peer ["+neighborPeerID+"]");
 				System.out.println("Connecting neighbor client : "+neighborPeerID);
 				makeConnectionToneighborPeer(neighborPeerMap.get(neighborPeerID));
 			}
@@ -154,6 +157,8 @@ public class Controller {
 			System.out.println(LOGGER_PREFIX+" Connection peer "+peerInfo.getPeerID() + " on "+neighborPeerHost + " port: "+neighborPortNumber);
 			
 			Socket neighborPeerSocket = new Socket(neighborPeerHost, neighborPortNumber);
+			
+			logger.info("Peer "+controller.getPeerID()+" is connected from Peer ["+peerInfo.getPeerID()+"]");
 			
 			System.out.println(LOGGER_PREFIX+" Connected to peer "+peerInfo.getPeerID() + " on "+neighborPeerHost + " port: "+neighborPortNumber);
 			
@@ -372,7 +377,7 @@ public class Controller {
 		unChokeMessage.setMessgageType(Constants.UNCHOKE_MESSAGE);	
 
 		System.out.println(LOGGER_PREFIX+": Sending OPTIMISTIC UNCHOKE message to "+peerToBeUnChoked);
-		
+		logger.info("Peer ["+peerID+"] has the optimistically unchoked neighbor ["+peerToBeUnChoked+"]");
 		for (PeerHandler peerHandler : neighborPeerHandlerList) {
 			if(peerHandler.getPeerId().equals(peerToBeUnChoked)){
 				if(peerHandler.isHandshakeMessageReceived() == true){
@@ -387,8 +392,10 @@ public class Controller {
 		return chokedPeerList;
 	}
 	
-	public void insertPiece(Peer2PeerMessage pieceMessage){
+	public void insertPiece(Peer2PeerMessage pieceMessage, String sourcePeerID){
+		logger.info("Peer ["+controller.getPeerID()+"] has downloaded the piece ["+pieceMessage.getPieceIndex()+"] from ["+sourcePeerID+"]. Now the number of pieces it has is "+(pieceManager.getBitFieldHandler().getNoOfPieces()+1) );
 		pieceManager.writePiece(pieceMessage.getPieceIndex(), pieceMessage.getData());
+		
 	}
 	
 	public int[] getMissingPieceIndexArray(){

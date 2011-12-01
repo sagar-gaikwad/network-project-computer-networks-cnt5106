@@ -67,7 +67,7 @@ public class PeerHandler implements Runnable{
 	
 	private int downloadDataSize = 0;
 	
-	private MessageLogger logger = LogFactory.getLogger(peerID);
+	private MessageLogger logger = null;
 	/**
 	 * Instantiates a new peer handler.
 	 */
@@ -89,7 +89,7 @@ public class PeerHandler implements Runnable{
 		peerHandler.neighborPeerSocket = socket;
 		peerHandler.controller = controller;
 		
-		boolean isInitialized = peerHandler.init();
+		boolean isInitialized = peerHandler.init(controller);
 		
 		if(isInitialized == false){
 			peerHandler.close();
@@ -103,7 +103,7 @@ public class PeerHandler implements Runnable{
 	 *
 	 * @return true, if successful
 	 */
-	synchronized private boolean init(){
+	synchronized private boolean init(Controller controller){
 		if(neighborPeerSocket == null){
 			return false;
 		}
@@ -141,7 +141,8 @@ public class PeerHandler implements Runnable{
 		new Thread(peerMessageSender).start();
 
 		chunkRequester = ChunkRequester.getInstance(controller, this);
-//		new Thread(chunkRequester).start();
+
+		logger = controller.getLogger();
 		
 		return true;
 	}
@@ -226,14 +227,11 @@ public class PeerHandler implements Runnable{
 				}else if(message.getType() == Constants.SHUTDOWN_MESSAGE){
 					Peer2PeerMessage peer2peerMessage = (Peer2PeerMessage)message;
 					handleShutdownMessage(peer2peerMessage);
-				}else if(message.getType() == Constants.SHUTDOWN_DONE_MESSAGE){
-					Peer2PeerMessage peer2peerMessage = (Peer2PeerMessage)message;
-					handleShutdownDone(peer2peerMessage);
 				}
 			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+//			e.printStackTrace();
 		} catch (ClassNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -298,8 +296,11 @@ public class PeerHandler implements Runnable{
 	 *
 	 * @param peer2PeerMessage the peer2 peer message
 	 */
-	private void handleUnchockMessage(Peer2PeerMessage unchokeMessage) {
+	private void handleUnchockMessage(Peer2PeerMessage unchokeMessage) {		
 		isThisPeerChokedByNeighborPeer = false;
+
+		logger.info("Peer ["+controller.getPeerID()+"] is unchoked by ["+peerID+"]");
+		
 		try {
 			chunkRequester.addMessage(unchokeMessage);
 		} catch (InterruptedException e) {
@@ -339,7 +340,7 @@ public class PeerHandler implements Runnable{
 	 * @param peer2PeerMessage the peer2 peer message
 	 */
 	private void handleChokeMessage(Peer2PeerMessage peer2PeerMessage) {
-		logger.info("Peer ["+peerID+"] is choked by ["+controller.getPeerID()+"]");
+		logger.info("Peer ["+controller.getPeerID()+"] is choked by ["+peerID+"]");
 		isThisPeerChokedByNeighborPeer = true;		
 	}
 
@@ -382,9 +383,9 @@ public class PeerHandler implements Runnable{
 		sendBitFieldMessage();
 		
 		if(isHandShakeMessageSent == false){
+			logger.info("Peer "+controller.getPeerID()+" is connected from Peer "+peerID+".");
 			sendHandshakeMessage();
 		}
-		
 		
 		isHandshakeMessageReceived = true;		
 		
@@ -606,38 +607,10 @@ public class PeerHandler implements Runnable{
 			e.printStackTrace();
 		}
 	}
-	public void handleShutdownDone(Peer2PeerMessage message)
-	{
-		//Mohit
-		peerMessageSender.shutdown();
-		chunkRequester.shutdown();
-		controller.shutdown();
-	}
 	
 	public void handleShutdownMessage(Peer2PeerMessage message)
 	{
-		//MOHIT
-		try {
-			Peer2PeerMessage doneShutdownMessage =Peer2PeerMessage.getInstance();
-			doneShutdownMessage.setMessgageType(Constants.SHUTDOWN_DONE_MESSAGE);			
-			peerMessageSender.sendMessage(doneShutdownMessage);
-			
-			controller.BroadcastShutdownMessage();
-			peerMessageSender.shutdown();
-			chunkRequester.shutdown();
-			controller.shutdown();
-			
-			//sendShutDo
-			//Peer2PeerMessage shutdownMessage = Peer2PeerMessage.getInstance();
-			//shutdownMessage.setMessgageType(Constants.SHUTDOWN_MESSAGE);
-						
-			
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-				
-		
+		controller.markFileDownloadComplete(peerID);
 	}
 
 	private void setChoke(boolean message)

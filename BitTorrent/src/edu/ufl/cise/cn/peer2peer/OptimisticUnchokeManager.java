@@ -22,7 +22,7 @@ public class OptimisticUnchokeManager implements Runnable{
     
     private Controller controller = null;
     
-    private MessageLogger logger = LogFactory.getLogger(null);
+    private MessageLogger logger = null;
     
     private OptimisticUnchokeManager(){
 		
@@ -45,6 +45,7 @@ public class OptimisticUnchokeManager implements Runnable{
     		}
     		
     		optimisticUnchokeManager.controller = controller;
+    		optimisticUnchokeManager.logger = controller.getLogger();
     		
     	}
     	
@@ -72,18 +73,14 @@ public class OptimisticUnchokeManager implements Runnable{
 			controller.optimisticallyUnChokePeers(chokedPeerList.get(random.nextInt(chokedPeerList.size())));
 		}
 		
-		if(controller.isFileDownloadComplete() == true)
-    	{    		
-			//System.out.println("File DOWNLOAD COMPLETE FOR PEER : "+controller.getPeerID());
+		controller.checkAllPeersFileDownloadComplete();
+		if(controller.isFileDownloadComplete() == true){
+
 			logger.info("Peer ["+controller.getPeerID()+"] has downloaded the complete file.");
-    	}
-		
-		if(controller.isAllPeersFileDownloadComplete() == true)
-		{
-			controller.BroadcastShutdownMessage();
-		
-		}
-		
+			controller.broadcastShutdownMessage();
+
+
+		};
 		
 	}
 	

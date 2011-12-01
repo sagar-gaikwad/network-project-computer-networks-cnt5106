@@ -129,13 +129,19 @@ public class PieceManager {
 	synchronized public void close(){
 		//close outputfilestream
 		try {
-			outStream.close();
-			inStream.close();
+			if(outStream != null){
+				outStream.close();
+			}
+			
+			if(inStream != null){
+				inStream.close();
+			}
+			
 			System.out.println("close : PieceManager : input and output streams closed");
 		}
 		catch (Exception e) {
 			// TODO: handle exception
-			e.printStackTrace();
+//			e.printStackTrace();
 		}
 		
 		//assuming there is not connection of input file needed				

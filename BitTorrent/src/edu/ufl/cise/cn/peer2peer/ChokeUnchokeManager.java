@@ -10,10 +10,11 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
+import edu.ufl.cise.cn.peer2peer.utility.MessageLogger;
 import edu.ufl.cise.cn.peer2peer.utility.PropsReader;
 
 public class ChokeUnchokeManager implements Runnable {
-	
+
 	private static final String LOGGER_PREFIX = ChokeUnchokeManager.class.getSimpleName();
 
 	private ScheduledFuture<?> task = null;
@@ -24,19 +25,20 @@ public class ChokeUnchokeManager implements Runnable {
 
 	private Controller controller = null;
 	
-	private ChokeUnchokeManager(){
-		
+	private MessageLogger logger = null;
+
+	private ChokeUnchokeManager() {
+
 	}
 
-	public static synchronized ChokeUnchokeManager getInstance(
-			Controller controller) {
+	public static synchronized ChokeUnchokeManager getInstance(Controller controller) {
 		if (chokeUnchokeManager == null) {
 			if (controller == null) {
 				return null;
 			}
 
 			chokeUnchokeManager = new ChokeUnchokeManager();
-			boolean isInitialized = chokeUnchokeManager.init();
+			boolean isInitialized = chokeUnchokeManager.init(controller);
 
 			if (isInitialized == false) {
 				chokeUnchokeManager.deinit();
@@ -52,14 +54,15 @@ public class ChokeUnchokeManager implements Runnable {
 
 	}
 
-	private boolean init() {
+	private boolean init(Controller controller) {
+		logger = controller.getLogger();
 		scheduler = Executors.newScheduledThreadPool(1);
-		System.out.println("scheduler: "+scheduler);
+		System.out.println("scheduler: " + scheduler);
 		return true;
 	}
 
 	public void deinit() {
-		System.out.println(LOGGER_PREFIX+" Shutting down ChokeUnchokeManager......");
+		System.out.println(LOGGER_PREFIX + " Shutting down ChokeUnchokeManager......");
 		task.cancel(true);
 	}
 
@@ -81,16 +84,13 @@ public class ChokeUnchokeManager implements Runnable {
 		// --- test code ends
 
 		if (PropsReader.getPropertyValue("NumberOfPreferredNeighbors") != null)
-			preferredNeighbors = Integer.parseInt(PropsReader
-					.getPropertyValue("NumberOfPreferredNeighbors"));
+			preferredNeighbors = Integer.parseInt(PropsReader.getPropertyValue("NumberOfPreferredNeighbors"));
 		else
-			System.err
-					.println("NumberOfPreferredNeighbors variable not in properties file. Invalid Properties File!!!");
+			System.err.println("NumberOfPreferredNeighbors variable not in properties file. Invalid Properties File!!!");
 
 		if (preferredNeighbors > speedMap.size()) {
 
-			System.err
-					.println("ChokeUnchokeManager : Number of preferred neighbors is more than total peers. Might be problem. ");
+			System.err.println("ChokeUnchokeManager : Number of preferred neighbors is more than total peers. Might be problem. ");
 
 		} else {
 			ArrayList<String> unchokePeers = new ArrayList<String>();
@@ -116,10 +116,10 @@ public class ChokeUnchokeManager implements Runnable {
 			// To make valuecomparator object working.
 			LinkedHashMap<String, Double> sortedSpeedMap = new LinkedHashMap<String, Double>();
 
-			System.out.print(LOGGER_PREFIX+" Peer Speed : ");
+			System.out.print(LOGGER_PREFIX + " Peer Speed : ");
 			for (int i = 0; i < tempArr.length; i++) {
 				sortedSpeedMap.put(tempArr[i].getKey(), tempArr[i].getValue());
-				System.out.print(tempArr[i].getKey() + ":["+tempArr[i].getValue()+"] "+" , " );
+				System.out.print(tempArr[i].getKey() + ":[" + tempArr[i].getValue() + "] " + " , ");
 			}
 			System.out.println(" ");
 
@@ -134,27 +134,34 @@ public class ChokeUnchokeManager implements Runnable {
 				if (count == preferredNeighbors)
 					break;
 			}
-			
+
 			ArrayList<String> chokedPeerList = new ArrayList<String>();
-			
+
 			for (String peerID : unchokePeers) {
-				sortedSpeedMap.remove(peerID);				
-			}			
+				sortedSpeedMap.remove(peerID);
+			}
 			chokedPeerList.addAll(sortedSpeedMap.keySet());
 
-			System.out.print(LOGGER_PREFIX+":   Choking these peers: ");
-			
+			System.out.print(LOGGER_PREFIX + ":   Choking these peers: ");
+
 			for (String peerID : chokedPeerList) {
-				System.out.print(peerID +" , " );
+				System.out.print(peerID + " , ");
 			}
-			
+
 			System.out.println(" ");
-			System.out.print(LOGGER_PREFIX+": Unchoking these peers: ");
+			System.out.print(LOGGER_PREFIX + ": Unchoking these peers: ");
+
+			String logMessage = "Peer ["+controller.getPeerID()+"] has the preferred neighbors ["; 
 			
 			for (String peerID : unchokePeers) {
-				System.out.print(peerID + " , " );
+				System.out.print(peerID + " , ");
+				logMessage += peerID + " , ";
 			}
 			System.out.println(" ");
+
+			logMessage +="]";
+			
+			logger.info(logMessage);
 			
 			controller.unChokePeers(unchokePeers);
 			controller.chokePeers(chokedPeerList);
@@ -163,8 +170,8 @@ public class ChokeUnchokeManager implements Runnable {
 
 	// delay iin seconds
 	public void start(int startDelay, int intervalDelay) {
-		System.out.println("scheduler : "+scheduler);
-		task = scheduler.scheduleAtFixedRate(this, startDelay, intervalDelay,TimeUnit.SECONDS);
+		System.out.println("scheduler : " + scheduler);
+		task = scheduler.scheduleAtFixedRate(this, startDelay, intervalDelay, TimeUnit.SECONDS);
 	}
 
 }

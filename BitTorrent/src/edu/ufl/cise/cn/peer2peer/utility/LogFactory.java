@@ -1,5 +1,7 @@
 package edu.ufl.cise.cn.peer2peer.utility;
 
+import java.io.File;
+
 
 /**
  * A factory for creating Log objects.
@@ -19,7 +21,14 @@ public class LogFactory {
 	 */
 	public static MessageLogger getLogger(String peerID){
 		if(logger == null){
-			logger = new MessageLogger(peerID,Constants.LOG_FILE_DIRECTORY+""+peerID+".log", Constants.LOGGER_NAME);
+			
+			String directory = ""+Constants.LOG_FILE_DIRECTORY_NAME;
+			File file = new File(directory);
+			file.mkdir();
+			System.out.println("file path: "+file.getAbsolutePath());
+			
+			
+			logger = new MessageLogger(peerID,directory+"/"+Constants.LOG_FILE_NAME_PREFIX+peerID+".log", Constants.LOGGER_NAME);
 			try {
 				logger.initialize();
 			} catch (Exception e) {

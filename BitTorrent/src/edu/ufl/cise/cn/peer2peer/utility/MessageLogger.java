@@ -1,8 +1,10 @@
 package edu.ufl.cise.cn.peer2peer.utility;
 
 import java.io.IOException;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.logging.FileHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -150,8 +152,14 @@ public class MessageLogger extends Logger{
 	public void info(String msg){
 		Calendar c = Calendar.getInstance();		
 		String dateInStringFormat = formatter.format(c.getTime());
-		this.log(Level.INFO, "["+dateInStringFormat+"]: Peer [peer_ID "+peerID+"] "+msg);		
+		this.log(Level.INFO, "OFFICIAL LOGGING ["+getCurrentTime()+"] : "+msg);		
 	}
+	public String getCurrentTime(){
+        DateFormat date = new SimpleDateFormat("HH:mm:ss");
+        Date date1 = new Date();
+        return(date.format(date1));
+
+    }
 	
 	/**
 	 * Error.

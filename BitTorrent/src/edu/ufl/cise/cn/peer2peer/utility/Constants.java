@@ -44,6 +44,8 @@ public class Constants {
 	
 	public static final byte SHUTDOWN_DONE_MESSAGE = 101;
 	
+	public static final byte SYSTEM_END = 101;
+	
 	/** The Constant UNCHOKE_MESSAGE. */
 	public static final byte UNCHOKE_MESSAGE = 1;
 
@@ -113,6 +115,14 @@ public class Constants {
 		
 		if(i == Constants.PIECE_MESSAGE){
 			return "PIECE_MESSAGE";
+		}
+		
+		if(i == Constants.SHUTDOWN_DONE_MESSAGE){
+			return "SHUTDOWN_DONE_MESSAGE";
+		}
+		
+		if(i == Constants.SHUTDOWN_MESSAGE){
+			return "SHUTDOWN_MESSAGE";
 		}
 		
 		

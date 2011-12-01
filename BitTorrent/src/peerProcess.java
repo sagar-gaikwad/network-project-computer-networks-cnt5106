@@ -17,7 +17,7 @@ import edu.ufl.cise.cn.peer2peer.utility.LogFactory;
 import edu.ufl.cise.cn.peer2peer.utility.PeerConfigFileReader;
 import edu.ufl.cise.cn.peer2peer.utility.PropsReader;
 
-public class EntryPoint {
+public class peerProcess {
 	public static void main(String args[]){
 		String peerID = args[0];
 		

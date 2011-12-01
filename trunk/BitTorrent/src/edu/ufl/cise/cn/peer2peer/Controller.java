@@ -3,21 +3,15 @@ package edu.ufl.cise.cn.peer2peer;
 import java.io.IOException;
 import java.net.Socket;
 import java.net.UnknownHostException;
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Set;
 
-import com.test.Peer2;
 
 import edu.ufl.cise.cn.peer2peer.entities.Peer2PeerMessage;
-import edu.ufl.cise.cn.peer2peer.entities.PeerMessage;
 import edu.ufl.cise.cn.peer2peer.entities.Piece;
 import edu.ufl.cise.cn.peer2peer.filehandler.PieceManager;
 import edu.ufl.cise.cn.peer2peer.messagehandler.MessageManager;
-import edu.ufl.cise.cn.peer2peer.peerhandler.ChunkRequester;
 import edu.ufl.cise.cn.peer2peer.peerhandler.PeerHandler;
 import edu.ufl.cise.cn.peer2peer.utility.Constants;
 import edu.ufl.cise.cn.peer2peer.utility.LogFactory;

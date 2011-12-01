@@ -6,6 +6,7 @@ import java.net.Socket;
 import java.util.HashMap;
 
 import edu.ufl.cise.cn.peer2peer.peerhandler.PeerHandler;
+import edu.ufl.cise.cn.peer2peer.utility.MessageLogger;
 import edu.ufl.cise.cn.peer2peer.utility.PeerConfigFileReader;
 import edu.ufl.cise.cn.peer2peer.utility.PeerInfo;
 
@@ -37,6 +38,8 @@ public class PeerServer implements Runnable{
 	
 	private boolean isPeerServerCompleted = false;
 	
+	private MessageLogger logger = null;
+	
 	/**
 	 * Gets the single instance of PeerServer.
 	 *
@@ -51,7 +54,7 @@ public class PeerServer implements Runnable{
 			peerServer.peerServerID = peerServerID;
 			peerServer.controller = controller;
 			
-			boolean isInitialized = peerServer.init();
+			boolean isInitialized = peerServer.init(controller);
 			if(isInitialized == false){
 				peerServer.close();
 				peerServer = null;
@@ -65,7 +68,9 @@ public class PeerServer implements Runnable{
 	 *
 	 * @return true, if successful
 	 */
-	public boolean init(){
+	public boolean init(Controller controller){
+		
+		logger = controller.getLogger();
 		
 		peerConfigurationReader = PeerConfigFileReader.getInstance();
 		

@@ -1,5 +1,7 @@
 	
 
+import java.io.File;
+import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.Random;
@@ -11,23 +13,43 @@ import edu.ufl.cise.cn.peer2peer.entities.Peer2PeerMessage;
 import edu.ufl.cise.cn.peer2peer.peerhandler.ChunkRequester;
 import edu.ufl.cise.cn.peer2peer.peerhandler.PeerMessageSender;
 import edu.ufl.cise.cn.peer2peer.utility.Constants;
+import edu.ufl.cise.cn.peer2peer.utility.LogFactory;
 import edu.ufl.cise.cn.peer2peer.utility.PropsReader;
 
 public class EntryPoint {
 	public static void main(String args[]){
-		String peerID = args[0];
+		/*String peerID = args[0];
 		String hostAddress = args[1];
 		String portNumber = args[2];
 		String isFileExists = args[3];
 		
 		
 		Controller controller = Controller.getInstance(peerID);
-		controller.startProcess();
+		controller.startProcess();*/
 		
 //		test3();
 //		test4();
 //		test5();
 //		test6();
+		
+		test7();
+	}
+	
+	public static void test7(){
+		try {
+			/*String logFileName = "FileName";
+			String directory = "./directory";
+			File file = new File(directory);
+			file.mkdir();
+			
+			file.createTempFile(logFileName,".log",file);*/
+			
+			LogFactory.getLogger("1001");
+			
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	public static void test6(){

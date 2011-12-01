@@ -1,5 +1,6 @@
 package edu.ufl.cise.cn.peer2peer.utility;
 
+import java.io.File;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -51,6 +52,7 @@ public class MessageLogger extends Logger{
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	public void initialize() throws SecurityException, IOException{
+
 		fileHandler = new FileHandler(logFileName);
 		fileHandler.setFormatter(new LogMessageFormatter());
 		formatter = new SimpleDateFormat("E, dd MMM yyyy hh:mm:ss a");
@@ -149,10 +151,10 @@ public class MessageLogger extends Logger{
 	/* (non-Javadoc)
 	 * @see java.util.logging.Logger#info(java.lang.String)
 	 */
-	public void info(String msg){
+	public synchronized void info(String msg){
 		Calendar c = Calendar.getInstance();		
 		String dateInStringFormat = formatter.format(c.getTime());
-		this.log(Level.INFO, "OFFICIAL LOGGING ["+getCurrentTime()+"] : "+msg);		
+		this.log(Level.INFO, "["+dateInStringFormat+"] : "+msg);		
 	}
 	public String getCurrentTime(){
         DateFormat date = new SimpleDateFormat("HH:mm:ss");

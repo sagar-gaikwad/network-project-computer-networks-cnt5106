@@ -7,6 +7,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 
 import com.test.ProcessStarter;
 
@@ -19,7 +20,7 @@ import com.test.ProcessStarter;
 public class PeerConfigFileReader {
 	
 	/** The peer info list. */
-	private HashMap<String,PeerInfo> peerInfoMap = null;
+	private LinkedHashMap<String,PeerInfo> peerInfoMap = null;
 	
 	/** The peer config file reader. */
 	private static PeerConfigFileReader peerConfigFileReader = null;
@@ -56,7 +57,7 @@ public class PeerConfigFileReader {
 //			BufferedReader configFileReader =  new BufferedReader(new InputStreamReader(PeerConfigFileReader.class.getResourceAsStream(Constants.PEER_INFO_FILE)));
 			BufferedReader configFileReader =  new BufferedReader(new InputStreamReader(new FileInputStream(Constants.PEER_INFO_FILE)));
 			
-			peerInfoMap = new HashMap<String,PeerInfo>();
+			peerInfoMap = new LinkedHashMap<String,PeerInfo>();
 			
 			String line = configFileReader.readLine();
 			

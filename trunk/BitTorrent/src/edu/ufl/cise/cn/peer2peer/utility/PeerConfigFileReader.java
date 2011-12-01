@@ -1,6 +1,7 @@
 package edu.ufl.cise.cn.peer2peer.utility;
 
 import java.io.BufferedReader;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
@@ -52,7 +53,8 @@ public class PeerConfigFileReader {
 		
 		
 		try {
-			BufferedReader configFileReader =  new BufferedReader(new InputStreamReader(PeerConfigFileReader.class.getResourceAsStream(Constants.PEER_INFO_FILE)));
+//			BufferedReader configFileReader =  new BufferedReader(new InputStreamReader(PeerConfigFileReader.class.getResourceAsStream(Constants.PEER_INFO_FILE)));
+			BufferedReader configFileReader =  new BufferedReader(new InputStreamReader(new FileInputStream(Constants.PEER_INFO_FILE)));
 			
 			peerInfoMap = new HashMap<String,PeerInfo>();
 			

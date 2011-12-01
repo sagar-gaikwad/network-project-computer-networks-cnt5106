@@ -86,15 +86,24 @@ public class PieceManager {
 			String outputFileName = new String();			
 			outputFileName = PropsReader.getPropertyValue("FileName");
 			
+			String directoryName = "peer_"+peerID;
+			File directory = new File(directoryName);
+			
 			if(isFileExists == false){
-				outputFileName+="-"+peerID;
+				// create directory
+				
+				directory.mkdir();
+//				outputFileName+="-"+peerID;
 			}
+			
+			outputFileName = directory.getAbsolutePath()+"/"+outputFileName;
 			
 			File outFile = new File(outputFileName);
 			if(outFile.exists() == true){
 				System.out.println(LOGGER_PREFIX+" File Found : "+outputFileName);
 			}
 			System.out.println("init : Write "+outFile.canWrite());
+			
 			//Automatically creates new file
 			/*if(!outFile.exists()){
 				outFile.createNewFile();
@@ -105,6 +114,8 @@ public class PieceManager {
 				System.out.println("PieceManager : outputfile "+outputFileName+" already exists");
 			}*/
 			outStream = new RandomAccessFile(outputFileName,"rw");
+			System.out.println("init : Write "+outFile.canWrite());
+
 			outStream.setLength(Integer.parseInt(PropsReader.getPropertyValue(Constants.FILE_SIZE)));
 			
 			System.out.println("Output stream opened");

@@ -43,7 +43,7 @@ public class ProcessStarter {
 			String commandLineArgument = peerInfo.getPeerID();
 			
 			Process serverProcess = Runtime.getRuntime().exec("ssh " + peerInfo.getHostAddress() + " cd " + path + " ;" +runCommand+" "+commandLineArgument);
-			
+			Thread.sleep(2000);
 			OutputDisplayer outputDisplayer = new OutputDisplayer(peer, new BufferedReader(new InputStreamReader(serverProcess.getInputStream()))  );
 			new Thread(outputDisplayer).start();
 			OutputDisplayer errorDisplayer = new OutputDisplayer(peer, new BufferedReader(new InputStreamReader(serverProcess.getErrorStream()))  );

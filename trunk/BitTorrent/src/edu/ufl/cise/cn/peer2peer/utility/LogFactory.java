@@ -25,7 +25,6 @@ public class LogFactory {
 			String directory = ""+Constants.LOG_FILE_DIRECTORY_NAME;
 			File file = new File(directory);
 			file.mkdir();
-			System.out.println("file path: "+file.getAbsolutePath());
 			
 			
 			logger = new MessageLogger(peerID,directory+"/"+Constants.LOG_FILE_NAME_PREFIX+peerID+".log", Constants.LOGGER_NAME);

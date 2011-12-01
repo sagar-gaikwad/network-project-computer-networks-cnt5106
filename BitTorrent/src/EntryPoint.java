@@ -14,6 +14,7 @@ import edu.ufl.cise.cn.peer2peer.peerhandler.ChunkRequester;
 import edu.ufl.cise.cn.peer2peer.peerhandler.PeerMessageSender;
 import edu.ufl.cise.cn.peer2peer.utility.Constants;
 import edu.ufl.cise.cn.peer2peer.utility.LogFactory;
+import edu.ufl.cise.cn.peer2peer.utility.PeerConfigFileReader;
 import edu.ufl.cise.cn.peer2peer.utility.PropsReader;
 
 public class EntryPoint {
@@ -29,6 +30,16 @@ public class EntryPoint {
 //		test6();
 		
 //		test7();
+//		test8();
+	}
+	
+	
+	public static void test8(){
+		System.out.println();;
+		String filePath = PeerConfigFileReader.class.getResource("PeerConfigFileReader.class").getPath();
+//		filePath.
+		String workingDir = System.getProperty("user.dir");
+		System.out.println("workingDir"+workingDir);
 	}
 	
 	public static void test7(){

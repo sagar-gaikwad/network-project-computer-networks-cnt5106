@@ -2,6 +2,7 @@ package edu.ufl.cise.cn.peer2peer.utility;
 
 
 import java.io.BufferedReader;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Hashtable;
@@ -27,7 +28,8 @@ public class PropsReader {
 	 * */
 	static{
 		try {
-			BufferedReader configFileReader =  new BufferedReader(new InputStreamReader(PropsReader.class.getResourceAsStream(Constants.CONFIGURATION_FILE) ));
+//			BufferedReader configFileReader =  new BufferedReader(new InputStreamReader(PropsReader.class.getResourceAsStream(Constants.CONFIGURATION_FILE) ));
+			BufferedReader configFileReader =  new BufferedReader(new InputStreamReader(new FileInputStream(Constants.CONFIGURATION_FILE)));
 			
 			String line = configFileReader.readLine();
 			

@@ -18,21 +18,17 @@ import edu.ufl.cise.cn.peer2peer.utility.PropsReader;
 
 public class EntryPoint {
 	public static void main(String args[]){
-		/*String peerID = args[0];
-		String hostAddress = args[1];
-		String portNumber = args[2];
-		String isFileExists = args[3];
-		
+		String peerID = args[0];
 		
 		Controller controller = Controller.getInstance(peerID);
-		controller.startProcess();*/
+		controller.startProcess();
 		
 //		test3();
 //		test4();
 //		test5();
 //		test6();
 		
-		test7();
+//		test7();
 	}
 	
 	public static void test7(){

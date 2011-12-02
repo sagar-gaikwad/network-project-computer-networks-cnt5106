@@ -86,11 +86,13 @@ public class ChokeUnchokeManager implements Runnable {
 		if (PropsReader.getPropertyValue("NumberOfPreferredNeighbors") != null)
 			preferredNeighbors = Integer.parseInt(PropsReader.getPropertyValue("NumberOfPreferredNeighbors"));
 		else
-			System.err.println("NumberOfPreferredNeighbors variable not in properties file. Invalid Properties File!!!");
+			{
+			//System.err.println("NumberOfPreferredNeighbors variable not in properties file. Invalid Properties File!!!");
+			}
 
 		if (preferredNeighbors > speedMap.size()) {
 
-			System.err.println("ChokeUnchokeManager : Number of preferred neighbors is more than total peers. Might be problem. ");
+			//System.err.println("ChokeUnchokeManager : Number of preferred neighbors is more than total peers. Might be problem. ");
 
 		} else {
 			ArrayList<String> unchokePeers = new ArrayList<String>();

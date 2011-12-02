@@ -378,7 +378,7 @@ public class PeerHandler implements Runnable{
 	 * @param handshakeMessage the handshake message
 	 */
 	private void handleHandshakeMessage(HandshakeMessage handshakeMessage){
-		System.out.println(LOGGER_PREFIX+": "+peerID+": HANDSHAKE_MESSAGE :["+handshakeMessage.getMessageNumber()+"]: ");
+		//System.out.println(LOGGER_PREFIX+": "+peerID+": HANDSHAKE_MESSAGE :["+handshakeMessage.getMessageNumber()+"]: ");
 		peerID = handshakeMessage.getPeerID();
 		sendBitFieldMessage();
 		

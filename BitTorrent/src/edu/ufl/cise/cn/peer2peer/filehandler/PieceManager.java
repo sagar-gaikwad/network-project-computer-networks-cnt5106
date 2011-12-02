@@ -1,7 +1,6 @@
 package edu.ufl.cise.cn.peer2peer.filehandler;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.RandomAccessFile;
 
 import edu.ufl.cise.cn.peer2peer.entities.Piece;

@@ -181,7 +181,7 @@ public class MessageManager {
 		}
 		
 		if(messageType == Constants.INTERESTED_MESSAGE){
-			System.out.println("This is interested message");
+			//System.out.println("This is interested message");
 			Peer2PeerMessage message = Peer2PeerMessage.getInstance();
 			message.setMessgageType(Constants.INTERESTED_MESSAGE);
 			message.setMessageLength(1);
@@ -190,7 +190,7 @@ public class MessageManager {
 		}
 		
 		if(messageType == Constants.NOT_INTERESTED_MESSAGE){
-			System.out.println("This is not interested message");
+			//System.out.println("This is not interested message");
 			Peer2PeerMessage message = Peer2PeerMessage.getInstance();
 			message.setMessgageType(Constants.NOT_INTERESTED_MESSAGE);
 			message.setMessageLength(1);
@@ -199,7 +199,7 @@ public class MessageManager {
 		}
 		
 		if(messageType == Constants.HAVE_MESSAGE){
-			System.out.println("This is Have message");
+			//System.out.println("This is Have message");
 			Peer2PeerMessage message = Peer2PeerMessage.getInstance();
 			message.setMessageLength(5);
 			message.setMessageLength(Constants.HAVE_MESSAGE);
@@ -207,7 +207,7 @@ public class MessageManager {
 		}
 		
 		if(messageType == Constants.REQUEST_MESSAGE){
-			System.out.println("This is Request message");
+			//System.out.println("This is Request message");
 			Peer2PeerMessage message = Peer2PeerMessage.getInstance();
 			message.setMessageLength(5);
 			message.setMessageLength(Constants.REQUEST_MESSAGE);

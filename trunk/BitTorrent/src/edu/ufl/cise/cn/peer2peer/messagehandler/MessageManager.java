@@ -163,7 +163,7 @@ public class MessageManager {
 		byte messageType = rawData[4];
 		
 		if(messageType == Constants.CHOKE_MESSAGE){
-			System.out.println("This is choke message");
+			//System.out.println("This is choke message");
 			Peer2PeerMessage message = Peer2PeerMessage.getInstance();
 			message.setMessgageType(Constants.CHOKE_MESSAGE);
 			message.setMessageLength(1);
@@ -172,7 +172,7 @@ public class MessageManager {
 		}
 		
 		if(messageType == Constants.UNCHOKE_MESSAGE){
-			System.out.println("This is unchoke message");
+			//System.out.println("This is unchoke message");
 			Peer2PeerMessage message = Peer2PeerMessage.getInstance();
 			message.setMessgageType(Constants.UNCHOKE_MESSAGE);
 			message.setMessageLength(1);

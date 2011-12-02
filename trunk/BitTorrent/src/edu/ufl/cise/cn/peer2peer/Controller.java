@@ -91,10 +91,10 @@ public class Controller {
 	 * Start P2P process.
 	 */
 	public void startProcess() {
-		System.out.println(LOGGER_PREFIX + ": Starting Server process");
+		//System.out.println(LOGGER_PREFIX + ": Starting Server process");
 		startServerThread(peerID);
-		System.out.println(LOGGER_PREFIX + ": Server process started.");
-		System.out.println(LOGGER_PREFIX + ": Connecting to client mentioned above the list.");
+		//System.out.println(LOGGER_PREFIX + ": Server process started.");
+		//System.out.println(LOGGER_PREFIX + ": Connecting to client mentioned above the list.");
 		connectToPreviousPeerneighbors();
 
 		chokeUnchokeManager = ChokeUnchokeManager.getInstance(this);
@@ -124,15 +124,15 @@ public class Controller {
 		HashMap<String, PeerInfo> neighborPeerMap = peerConfigurationReader.getPeerInfoMap();
 		Set<String> peerIDList = neighborPeerMap.keySet();
 
-		System.out.println("Current Peer Name : " + peerID);
+		//System.out.println("Current Peer Name : " + peerID);
 
 		for (String neighborPeerID : peerIDList) {
-			System.out.println("Checking neighbor client : " + neighborPeerID);
+			//System.out.println("Checking neighbor client : " + neighborPeerID);
 			// if peer ID is less than the ID of this peer then it ocured
 			// previously in file.
 			if (Integer.parseInt(neighborPeerID) < Integer.parseInt(peerID)) {
 				logger.info("Peer " + peerID + " makes a connection  to Peer [" + neighborPeerID + "]");
-				System.out.println("Connecting neighbor client : " + neighborPeerID);
+				//System.out.println("Connecting neighbor client : " + neighborPeerID);
 				makeConnectionToneighborPeer(neighborPeerMap.get(neighborPeerID));
 			}
 		}
@@ -155,7 +155,7 @@ public class Controller {
 
 			Socket neighborPeerSocket = new Socket(neighborPeerHost, neighborPortNumber);
 
-			System.out.println(LOGGER_PREFIX + " Connected to peer " + peerInfo.getPeerID() + " on " + neighborPeerHost + " port: " + neighborPortNumber);
+			//System.out.println(LOGGER_PREFIX + " Connected to peer " + peerInfo.getPeerID() + " on " + neighborPeerHost + " port: " + neighborPortNumber);
 
 			PeerHandler neighborPeerHandler = PeerHandler.getInstance(neighborPeerSocket, this);
 
@@ -286,7 +286,7 @@ public class Controller {
 
 		message.setHandler(pieceManager.getBitFieldHandler());
 		if (message.getHandler() == null) {
-			System.out.println(LOGGER_PREFIX + " BITFIELD HANDLER NULL.");
+			//System.out.println(LOGGER_PREFIX + " BITFIELD HANDLER NULL.");
 		}
 		message.setMessgageType(Constants.BITFIELD_MESSAGE);
 
@@ -352,7 +352,7 @@ public class Controller {
 		Peer2PeerMessage unChokeMessage = Peer2PeerMessage.getInstance();
 		unChokeMessage.setMessgageType(Constants.UNCHOKE_MESSAGE);
 
-		System.out.println(LOGGER_PREFIX + ": Sending OPTIMISTIC UNCHOKE message to " + peerToBeUnChoked);
+		//System.out.println(LOGGER_PREFIX + ": Sending OPTIMISTIC UNCHOKE message to " + peerToBeUnChoked);
 		logger.info("Peer [" + peerID + "] has the optimistically unchoked neighbor [" + peerToBeUnChoked + "]");
 		for (PeerHandler peerHandler : neighborPeerHandlerList) {
 			if (peerHandler.getPeerId().equals(peerToBeUnChoked)) {
@@ -420,7 +420,7 @@ public class Controller {
 
 		markFileDownloadComplete(peerID);
 		for (PeerHandler peerHandler : neighborPeerHandlerList) {
-			System.out.println(LOGGER_PREFIX + ": Sending SHUTDOWN message from " + peerID + " to : " + peerHandler.getPeerId());
+			//System.out.println(LOGGER_PREFIX + ": Sending SHUTDOWN message from " + peerID + " to : " + peerHandler.getPeerId());
 			peerHandler.sendShutdownMessage(shutdownMessage);
 		}
 	}
@@ -429,12 +429,12 @@ public class Controller {
 		HashMap<String, PeerInfo> neighborPeerMap = peerConfigurationReader.getPeerInfoMap();
 		Set<String> peerIDList = neighborPeerMap.keySet();
 
-		System.out.println("Current Peer Name : " + peerID);
+		//System.out.println("Current Peer Name : " + peerID);
 
 		int numberOfPeersSupposedToBeEstablishingConnection = 0;
 
 		for (String neighborPeerID : peerIDList) {
-			System.out.println("Checking neighbor client : " + neighborPeerID);
+			//System.out.println("Checking neighbor client : " + neighborPeerID);
 			// if peer ID is less than the ID of this peer then it ocured
 			// previously in file.
 			if (Integer.parseInt(neighborPeerID) > Integer.parseInt(peerID)) {

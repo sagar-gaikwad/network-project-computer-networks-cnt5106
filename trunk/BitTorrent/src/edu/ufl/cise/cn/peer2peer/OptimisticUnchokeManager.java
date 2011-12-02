@@ -60,13 +60,13 @@ public class OptimisticUnchokeManager implements Runnable{
     }
     
     public void deinit(){
-    	System.out.println("OptimisticUnchokeManager : Shutting down OptimisticUnchokeManager......");
+    	//System.out.println("OptimisticUnchokeManager : Shutting down OptimisticUnchokeManager......");
     	task.cancel(true);
     }
     
 	public void run() {
 		// TODO Auto-generated method stub		
-		System.out.println("OptimisiticUnchokeManager : Calling opmtimistic unchoke");
+		//System.out.println("OptimisiticUnchokeManager : Calling opmtimistic unchoke");
 		ArrayList<String> chokedPeerList = controller.getChokedPeerList();
 		if(chokedPeerList.size() > 0){
 			Random random = new Random();

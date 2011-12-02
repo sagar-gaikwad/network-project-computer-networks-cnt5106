@@ -43,11 +43,12 @@ public class ProcessStarter {
 			String commandLineArgument = peerInfo.getPeerID();
 			
 			Process serverProcess = Runtime.getRuntime().exec("ssh " + peerInfo.getHostAddress() + " cd " + path + " ;" +runCommand+" "+commandLineArgument);
-			OutputDisplayer outputDisplayer = new OutputDisplayer(peer, new BufferedReader(new InputStreamReader(serverProcess.getInputStream()))  );
+/*			OutputDisplayer outputDisplayer = new OutputDisplayer(peer, new BufferedReader(new InputStreamReader(serverProcess.getInputStream()))  );
 			new Thread(outputDisplayer).start();
 			OutputDisplayer errorDisplayer = new OutputDisplayer(peer, new BufferedReader(new InputStreamReader(serverProcess.getErrorStream()))  );
-			new Thread(errorDisplayer ).start();
+			new Thread(errorDisplayer ).start();*/
 			Thread.sleep(5000);
+			System.out.println("Started Process "+peerInfo.getPeerID() +" on "+peerInfo.getHostAddress()+" and port number : "+peerInfo.getPortNumber());
 		}
 	}
 }

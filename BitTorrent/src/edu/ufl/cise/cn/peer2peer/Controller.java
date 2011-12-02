@@ -420,7 +420,7 @@ public class Controller {
 
 		markFileDownloadComplete(peerID);
 		for (PeerHandler peerHandler : neighborPeerHandlerList) {
-			System.out.println(LOGGER_PREFIX + ": Sending SHUTDOWN message from " + peerID + " to : " + peerHandler.getPeerId());
+			//System.out.println(LOGGER_PREFIX + ": Sending SHUTDOWN message from " + peerID + " to : " + peerHandler.getPeerId());
 			peerHandler.sendShutdownMessage(shutdownMessage);
 		}
 	}

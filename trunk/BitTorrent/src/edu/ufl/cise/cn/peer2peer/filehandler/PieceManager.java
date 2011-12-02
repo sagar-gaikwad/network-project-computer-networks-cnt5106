@@ -67,13 +67,17 @@ public class PieceManager {
 		//create file name as output stream
 		if(PropsReader.getPropertyValue("PieceSize")!=null)
 			pieceSize = Integer.parseInt(PropsReader.getPropertyValue("PieceSize"));
-		else 
-			System.err.println("Piece Size not in Properties file. Invalid Properties File!!!");
-		if(PropsReader.getPropertyValue("FileSize")!= null)
+		else
+		{
+		//	System.err.println("Piece Size not in Properties file. Invalid Properties File!!!");
+		}
+			if(PropsReader.getPropertyValue("FileSize")!= null)
 			numOfPieces = (int) Math.ceil(Integer.parseInt(PropsReader.getPropertyValue("FileSize")) / (pieceSize*1.0)) ;
 		else
-			System.err.println("FileSize field not in Properties file. Invalid Properties File!!!");
-		System.out.println("init : PieceManager : number of pieces : "+numOfPieces);
+		{
+		//	System.err.println("FileSize field not in Properties file. Invalid Properties File!!!");
+		}
+		//System.out.println("init : PieceManager : number of pieces : "+numOfPieces);
 		try
 		{
 			bitField = new BitFieldHandler(numOfPieces);
@@ -102,7 +106,7 @@ public class PieceManager {
 			if(outFile.exists() == true){
 			//	System.out.println(LOGGER_PREFIX+" File Found : "+outputFileName);
 			}
-			System.out.println("init : Write "+outFile.canWrite());
+			//System.out.println("init : Write "+outFile.canWrite());
 			
 			//Automatically creates new file
 			/*if(!outFile.exists()){
@@ -114,11 +118,11 @@ public class PieceManager {
 				System.out.println("PieceManager : outputfile "+outputFileName+" already exists");
 			}*/
 			outStream = new RandomAccessFile(outputFileName,"rw");
-			System.out.println("init : Write "+outFile.canWrite());
+			//System.out.println("init : Write "+outFile.canWrite());
 
 			outStream.setLength(Integer.parseInt(PropsReader.getPropertyValue(Constants.FILE_SIZE)));
 			
-			System.out.println("Output stream opened");
+			//System.out.println("Output stream opened");
 			//inStream = new FileInputStream(outputFileName);
 			return true;
 			
@@ -148,7 +152,7 @@ public class PieceManager {
 				inStream.close();
 			}
 			
-			System.out.println("close : PieceManager : input and output streams closed");
+			//System.out.println("close : PieceManager : input and output streams closed");
 		}
 		catch (Exception e) {
 			// TODO: handle exception
@@ -194,7 +198,7 @@ public class PieceManager {
 			}
 		}
 		else {
-			System.err.println("Error : Wrong piece number asked");
+			//System.err.println("Error : Wrong piece number asked");
 			return null;
 		}
 	}
@@ -230,7 +234,7 @@ public class PieceManager {
 		}
 		else
 		{
-			System.err.println("Piece is already there. Why are you overwriting?? ");
+			//System.err.println("Piece is already there. Why are you overwriting?? ");
 			return false;
 		}
 		

@@ -87,12 +87,12 @@ public class BitFieldHandler implements Serializable{
 	public void printvector()
 	{
 		int i =0;
-		System.out.println(" printing bitvector");
+		//System.out.println(" printing bitvector");
 		while (i < size)
 		{
-			System.out.print(" "+i+" : "+bitfieldVector[i++]);
+			//System.out.print(" "+i+" : "+bitfieldVector[i++]);
 		}
-		System.out.println("");
+		//System.out.println("");
 	}
 	
 	public void setBitFieldOnForAllIndexes(){

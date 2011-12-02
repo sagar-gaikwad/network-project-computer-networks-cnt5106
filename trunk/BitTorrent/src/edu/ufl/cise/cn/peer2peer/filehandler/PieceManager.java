@@ -100,7 +100,7 @@ public class PieceManager {
 			
 			File outFile = new File(outputFileName);
 			if(outFile.exists() == true){
-				System.out.println(LOGGER_PREFIX+" File Found : "+outputFileName);
+			//	System.out.println(LOGGER_PREFIX+" File Found : "+outputFileName);
 			}
 			System.out.println("init : Write "+outFile.canWrite());
 			

@@ -224,7 +224,7 @@ public class ChunkRequester implements Runnable {
 	}
 	
 	public void shutdown(){
-		System.out.println(LOGGER_PREFIX+" Shutting down ChunkRequester......");
+		//System.out.println(LOGGER_PREFIX+" Shutting down ChunkRequester......");
 		isShutDown = true;
 	}
 	

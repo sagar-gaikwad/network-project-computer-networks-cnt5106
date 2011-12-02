@@ -69,8 +69,7 @@ public class MessageLogger extends Logger{
 		// TODO Auto-generated method stub
 		super.log(level, msg);
 		super.log(level, "\n");
-		System.out.println(msg);
-//		System.out.println(msg);
+		//System.out.println(msg);
 	}
 	
 	/**

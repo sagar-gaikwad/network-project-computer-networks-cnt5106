@@ -96,7 +96,7 @@ public class PeerServer implements Runnable{
 		PeerInfo serverPeerInfo = peerInfoMap.get(peerServerID);
 		
 //		String peerServerHostAddress = serverPeerInfo.getHostAddress();
-		System.out.println(LOGGER_PREFIX+" : Starting server on : "+serverPeerInfo.getHostAddress() +" Port number : "+serverPeerInfo.getPortNumber());
+		//System.out.println(LOGGER_PREFIX+" : Starting server on : "+serverPeerInfo.getHostAddress() +" Port number : "+serverPeerInfo.getPortNumber());
 		int peerServerPortNumber = serverPeerInfo.getPortNumber();
 		
 		try {
@@ -109,11 +109,11 @@ public class PeerServer implements Runnable{
 			for(int i=0 ; i<numberOfPeersSupposedToBeConnected ; i++){
 				
 				
-				System.out.println(LOGGER_PREFIX+ " : Waiting for client connection");
+				//System.out.println(LOGGER_PREFIX+ " : Waiting for client connection");
 				
 				Socket neighborPeerSocket = serverSocket.accept();
 				
-				System.out.println(LOGGER_PREFIX+ " : Connection established");
+				//System.out.println(LOGGER_PREFIX+ " : Connection established");
 				
 				//create and initialize peer handler class. 
 				PeerHandler neighborPeerHandler = PeerHandler.getInstance(	neighborPeerSocket, controller);
@@ -129,7 +129,7 @@ public class PeerServer implements Runnable{
 			
 			setPeerServerCompleted(true);
 			
-			System.out.println(LOGGER_PREFIX+": Exiting PeerServier");
+			//System.out.println(LOGGER_PREFIX+": Exiting PeerServier");
 			
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
